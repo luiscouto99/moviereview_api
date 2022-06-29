@@ -1,0 +1,13 @@
+package mindswap.academy.moviereview_api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MoviereviewApiApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MoviereviewApiApplication.class, args);
+	}
+
+}
