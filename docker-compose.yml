@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: moviereview
+    ports:
+      - '5432:5432'
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: moviereview
+        POSTGRES_DB: moviereview_db
+    restart: always
+    #env_file: #para criar variaveis de environment
+      #- .env
+    volumes: #para ficar com a data no pc mesmo que elimine o container
+      - ./db-data/:/var/lib/postgresql/data/

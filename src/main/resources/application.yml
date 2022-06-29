@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: ${HIBERNATE_DDL_AUTO:create-drop}
+      show-sql: true
+  datasource:
+    platform: postgres
+    url: ${POSTGRES_URL:jdbc:postgres://localhost:5432/moviereview_db}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:moviereview}
+    driverClassName: org.postgresql.Driver
