@@ -1,4 +1,4 @@
 package mindswap.academy.moviereview_api.command.user;
 
-public class UserControllerDto {
+public class UserDto {
 }

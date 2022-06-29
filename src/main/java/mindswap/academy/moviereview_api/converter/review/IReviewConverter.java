@@ -1,4 +1,6 @@
 package mindswap.academy.moviereview_api.converter.review;
 
-public interface IReviewConverter {
+import mindswap.academy.moviereview_api.converter.IConverter;
+
+public interface IReviewConverter extends IConverter {
 }

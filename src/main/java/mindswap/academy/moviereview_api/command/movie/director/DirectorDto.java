@@ -1,4 +1,4 @@
 package mindswap.academy.moviereview_api.command.movie.director;
 
-public class DirectorControllerDto {
+public class DirectorDto {
 }
