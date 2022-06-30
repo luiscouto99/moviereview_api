@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReviewConverter implements IReviewConverter{
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public ReviewConverter(ModelMapper modelMapper) {

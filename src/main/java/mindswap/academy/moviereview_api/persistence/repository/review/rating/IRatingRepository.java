@@ -1,4 +1,7 @@
 package mindswap.academy.moviereview_api.persistence.repository.review.rating;
 
-public interface IRatingRepository {
+import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IRatingRepository extends JpaRepository<Rating, Long> {
 }

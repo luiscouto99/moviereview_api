@@ -1,20 +1,41 @@
 package mindswap.academy.moviereview_api.dataloader;
 
 import lombok.RequiredArgsConstructor;
+import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
+import mindswap.academy.moviereview_api.persistence.model.review.Review;
+import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.cassandra.CassandraProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Component
 public class DataLoader implements ApplicationRunner {
-   private final RestTemplate restTemplate;
+
+    //private final RestTemplate restTemplate;
+    private final IRatingRepository iRatingRepository;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161",MovieSummary.class);
+
+            List<Rating> ratingList = new ArrayList<>(Arrays.asList(
+                    Rating.builder().rate("★✰✰✰✰").build(),
+                    Rating.builder().rate("★★✰✰✰").build(),
+                    Rating.builder().rate("★★★✰✰").build(),
+                    Rating.builder().rate("★★★★✰").build(),
+                    Rating.builder().rate("★★★★★").build()
+                    ));
+
+            this.iRatingRepository.saveAll(ratingList);
+
+
+//        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161%22,MovieSummary.class);
 //        assert movieSummary != null;
 //        System.out.println(movieSummary);
 //        System.out.println(movieSummary.fullTitle);
