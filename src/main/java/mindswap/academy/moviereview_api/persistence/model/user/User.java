@@ -20,7 +20,7 @@ public class User {
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "role_id_fk", referencedColumnName = "id")
     private Role roleId;
 

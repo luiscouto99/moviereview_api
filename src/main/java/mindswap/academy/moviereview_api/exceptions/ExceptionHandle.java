@@ -10,7 +10,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ExceptionHandle extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {RoleNotFoundException.class, UserNotFoundException.class, EmailAlreadyRegisteredException.class})
+    @ExceptionHandler(value = {RoleNotFoundException.class, UserNotFoundException.class, EmailAlreadyRegisteredException.class,
+            RoleAlreadyExistsException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }

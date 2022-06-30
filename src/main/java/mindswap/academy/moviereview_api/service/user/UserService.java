@@ -8,6 +8,7 @@ import mindswap.academy.moviereview_api.exceptions.EmailAlreadyRegisteredExcepti
 import mindswap.academy.moviereview_api.exceptions.RoleNotFoundException;
 import mindswap.academy.moviereview_api.exceptions.UserNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
+import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.http.HttpStatus;
@@ -36,10 +37,10 @@ public class UserService implements IUserService {
     public UserDto add(UserDto userDto) {
         this.ROLE_REPOSITORY.findById(userDto.getRoleId())
                 .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
-        User existingUser = this.REPOSITORY
-                .findByEmail(userDto.getEmail())
-                .orElse(null);
-        if (existingUser != null) throw new EmailAlreadyRegisteredException(EMAIL_REGISTERED);
+        this.REPOSITORY.findByEmail(userDto.getEmail())
+                .ifPresent(user -> {
+                    throw new EmailAlreadyRegisteredException(EMAIL_REGISTERED);
+                });
 
         User user = this.CONVERTER.converter(userDto, User.class);
         return this.CONVERTER.converter(
@@ -60,6 +61,11 @@ public class UserService implements IUserService {
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         User updatedUser = this.CONVERTER.updateDtoToEntity(userUpdateDto, user);
+
+        Role role = this.ROLE_REPOSITORY.findById(userUpdateDto.getRoleId())
+                .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        updatedUser.setRoleId(role);
+        updatedUser.getRoleId().setRoleName(null);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
     }

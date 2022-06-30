@@ -1,4 +1,4 @@
-package mindswap.academy.moviereview_api.controller;
+package mindswap.academy.moviereview_api.exceptions;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
