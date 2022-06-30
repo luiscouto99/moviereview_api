@@ -4,5 +4,5 @@ import mindswap.academy.moviereview_api.command.review.rating.RatingDto;
 import mindswap.academy.moviereview_api.command.review.rating.RatingUpdateDto;
 import mindswap.academy.moviereview_api.service.IGenericService;
 
-public interface IRatingService extends IGenericService<RatingDto, RatingUpdateDto> {
+public interface IRatingService extends IGenericService<RatingDto, RatingDto, RatingUpdateDto> {
 }
