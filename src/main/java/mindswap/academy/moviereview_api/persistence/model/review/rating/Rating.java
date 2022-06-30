@@ -13,7 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EqualsAndHashCode
-@Table (name = "ratings")
 public class Rating {
 
     @Id
