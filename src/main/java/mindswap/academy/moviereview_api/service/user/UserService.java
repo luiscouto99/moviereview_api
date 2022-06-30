@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
+import mindswap.academy.moviereview_api.exceptions.EmailAlreadyRegisteredException;
 import mindswap.academy.moviereview_api.exceptions.RoleNotFoundException;
 import mindswap.academy.moviereview_api.exceptions.UserNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
@@ -16,8 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.ROLE_NOT_FOUND;
-import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.USER_NOT_FOUND;
+import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.*;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +36,11 @@ public class UserService implements IUserService {
     public UserDto add(UserDto userDto) {
         this.ROLE_REPOSITORY.findById(userDto.getRoleId())
                 .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        User existingUser = this.REPOSITORY
+                .findByEmail(userDto.getEmail())
+                .orElse(null);
+        if (existingUser != null) throw new EmailAlreadyRegisteredException(EMAIL_REGISTERED);
+
         User user = this.CONVERTER.converter(userDto, User.class);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(user), UserDto.class);

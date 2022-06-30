@@ -28,6 +28,11 @@ public class UserDto {
     @Size(min = 1, max = 20)
     private String lastName;
 
+    @NotEmpty
+    @Email
+    @Size(max = 40)
+    private String email;
+
     @NotNull
     @DateTimeFormat
     private LocalDate dateOfBirth;

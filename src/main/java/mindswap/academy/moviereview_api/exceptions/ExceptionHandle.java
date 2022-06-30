@@ -1,6 +1,5 @@
 package mindswap.academy.moviereview_api.exceptions;
 
-import org.hibernate.tool.schema.spi.CommandAcceptanceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ExceptionHandle extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {RoleNotFoundException.class, UserNotFoundException.class})
+    @ExceptionHandler(value = {RoleNotFoundException.class, UserNotFoundException.class, EmailAlreadyRegisteredException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
