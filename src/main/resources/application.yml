@@ -14,7 +14,7 @@ spring:
       show-sql: true
   datasource:
     platform: postgres
-    url: ${POSTGRES_URL:jdbc:postgresql://192.168.0.104:5432/moviereview_db}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/moviereview_db}
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:moviereview}
     driverClassName: org.postgresql.Driver
