@@ -2,11 +2,12 @@ package mindswap.academy.moviereview_api.controller.review;
 
 import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
-import mindswap.academy.moviereview_api.service.review.IReviewService;
+import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.service.review.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,12 +23,17 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ReviewDto add(ReviewDto reviewDto) {
+    public ReviewDto add(@Valid @RequestBody ReviewDto reviewDto) {
         return this.reviewService.add(reviewDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
         return this.reviewService.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    public ReviewDto update(@PathVariable("id") Long id, @Valid @RequestBody ReviewUpdateDto reviewUpdateDto) {
+        return this.reviewService.update(id, reviewUpdateDto);
     }
 }

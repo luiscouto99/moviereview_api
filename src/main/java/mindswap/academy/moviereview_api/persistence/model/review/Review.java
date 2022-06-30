@@ -23,8 +23,8 @@ public class Review {
     @Column(nullable = false)
     private String review;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "rating_id_fk")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "rate_id_fk")
     private Rating ratingId;
 
     //@ManyToOne(cascade = CascadeType.MERGE)

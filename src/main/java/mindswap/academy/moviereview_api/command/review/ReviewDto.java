@@ -1,11 +1,9 @@
 package mindswap.academy.moviereview_api.command.review;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 
 @Builder
 @Getter

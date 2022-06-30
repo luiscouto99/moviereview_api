@@ -3,17 +3,18 @@ package mindswap.academy.moviereview_api.command.review;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-@ToString
-@Builder
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class ReviewUpdateDto {
     @NotEmpty
     private String review;
 
-    @NotEmpty
-    private Long rating;
+    @NotNull
+    private Long ratingId;
 }
