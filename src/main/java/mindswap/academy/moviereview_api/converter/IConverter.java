@@ -17,4 +17,8 @@ public interface IConverter {
                 .map(entity -> getMapper().map(entity, outCLass))
                 .collect(Collectors.toList());
     }
+    default <T, D> D converterUpdate(T update, D toUpdate) {
+        getMapper().map(update, toUpdate);
+        return toUpdate;
+    }
 }
