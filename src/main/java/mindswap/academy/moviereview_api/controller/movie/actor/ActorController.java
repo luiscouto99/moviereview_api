@@ -1,8 +1,8 @@
 package mindswap.academy.moviereview_api.controller.movie.actor;
 
 import lombok.RequiredArgsConstructor;
-import mindswap.academy.moviereview_api.exception.command.movie.actor.ActorDto;
-import mindswap.academy.moviereview_api.exception.command.movie.actor.ActorUpdateDto;
+import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
+import mindswap.academy.moviereview_api.command.movie.actor.ActorUpdateDto;
 import mindswap.academy.moviereview_api.service.movie.actor.IActorService;
 import org.springframework.web.bind.annotation.*;
 

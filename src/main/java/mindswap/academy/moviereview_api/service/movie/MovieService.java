@@ -1,9 +1,9 @@
 package mindswap.academy.moviereview_api.service.movie;
 
 import lombok.RequiredArgsConstructor;
-import mindswap.academy.moviereview_api.exception.command.movie.MovieDto;
-import mindswap.academy.moviereview_api.exception.command.movie.MovieUpdateDto;
-import mindswap.academy.moviereview_api.exception.command.movie.OutMovieDto;
+import mindswap.academy.moviereview_api.command.movie.MovieDto;
+import mindswap.academy.moviereview_api.command.movie.MovieUpdateDto;
+import mindswap.academy.moviereview_api.command.movie.OutMovieDto;
 import mindswap.academy.moviereview_api.converter.movie.IMovieConverter;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;

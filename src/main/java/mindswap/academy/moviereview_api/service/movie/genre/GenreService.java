@@ -1,8 +1,8 @@
 package mindswap.academy.moviereview_api.service.movie.genre;
 
 import lombok.RequiredArgsConstructor;
-import mindswap.academy.moviereview_api.exception.command.movie.genre.GenreDto;
-import mindswap.academy.moviereview_api.exception.command.movie.genre.GenreUpdateDto;
+import mindswap.academy.moviereview_api.command.movie.genre.GenreDto;
+import mindswap.academy.moviereview_api.command.movie.genre.GenreUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.genre.IGenreConverter;
 import mindswap.academy.moviereview_api.exception.NotFound;
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
