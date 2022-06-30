@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.role.RoleDto;
 import mindswap.academy.moviereview_api.command.user.role.RoleUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.role.IRoleConverter;
-import mindswap.academy.moviereview_api.exceptions.RoleAlreadyExistsException;
-import mindswap.academy.moviereview_api.exceptions.RoleNotFoundException;
+import mindswap.academy.moviereview_api.exception.RoleAlreadyExistsException;
+import mindswap.academy.moviereview_api.exception.RoleNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.ROLE_ALREADY_EXISTS;
-import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.ROLE_NOT_FOUND;
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @Service
 @AllArgsConstructor

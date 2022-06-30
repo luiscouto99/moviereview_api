@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
-import mindswap.academy.moviereview_api.exceptions.EmailAlreadyRegisteredException;
-import mindswap.academy.moviereview_api.exceptions.RoleNotFoundException;
-import mindswap.academy.moviereview_api.exceptions.UserNotFoundException;
+import mindswap.academy.moviereview_api.exception.EmailAlreadyRegisteredException;
+import mindswap.academy.moviereview_api.exception.RoleNotFoundException;
+import mindswap.academy.moviereview_api.exception.UserNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.*;
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @Service
 @AllArgsConstructor

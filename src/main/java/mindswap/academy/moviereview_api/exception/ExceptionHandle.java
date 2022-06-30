@@ -15,21 +15,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ExceptionHandle extends ResponseEntityExceptionHandler {
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(value = {RoleNotFoundException.class, UserNotFoundException.class, EmailAlreadyRegisteredException.class,
-            ReviewNotFoundException.class, RatingNotFoundException.class})
+            ReviewNotFoundException.class, RatingNotFoundException.class, RoleAlreadyExistsException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
