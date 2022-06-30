@@ -1,6 +1,8 @@
 package mindswap.academy.moviereview_api.dataloader;
 
 import lombok.RequiredArgsConstructor;
+import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
+import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
@@ -10,13 +12,16 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @Component
 public class DataLoader implements ApplicationRunner {
+    private final IRoleRepository ROLE_REPOSITORY;
+
 
     //private final RestTemplate restTemplate;
     private final IRatingRepository iRatingRepository;
@@ -36,6 +41,12 @@ public class DataLoader implements ApplicationRunner {
 
 
 //        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161%22,MovieSummary.class);
+        List<Role> roles = Arrays.asList(
+                Role.builder().roleName("User").build(),
+                Role.builder().roleName("Admin").build());
+        this.ROLE_REPOSITORY.saveAll(roles);
+
+        //        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161",MovieSummary.class);
 //        assert movieSummary != null;
 //        System.out.println(movieSummary);
 //        System.out.println(movieSummary.fullTitle);

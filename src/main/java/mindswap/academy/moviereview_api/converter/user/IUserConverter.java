@@ -1,4 +1,6 @@
 package mindswap.academy.moviereview_api.converter.user;
 
-public interface IUserConverter {
+import mindswap.academy.moviereview_api.converter.IConverter;
+
+public interface IUserConverter extends IConverter {
 }
