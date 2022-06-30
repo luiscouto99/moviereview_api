@@ -15,9 +15,11 @@ public class ReviewDto {
     private Long id;
 
     @NotEmpty
-    @Size(min = 15, message = "The minimun amount of characters is 15!")
+    @Size(min = 15, message = "A review minimun amount of characters is 15!")
     private String review;
 
     @NotNull
+    @Min(value = 1, message = "The ratingId has to be a number between 1-5")
+    @Max(value = 5, message = "The ratingId has to be a number between 1-5")
     private Long ratingId;
 }

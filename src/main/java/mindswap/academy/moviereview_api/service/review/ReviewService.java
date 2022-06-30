@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
+import mindswap.academy.moviereview_api.exception.ReviewNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +29,9 @@ public class ReviewService implements IReviewService {
     public List<ReviewDto> getAll() {
         List<Review> reviewList = this.iReviewRepository.findAll();
 
-        // para quando tiver custom exceptions
-        /*if (reviewList.isEmpty()) {
-            throw new BlaBlaBlaException();
-        }*/
+        if (reviewList.isEmpty()) {
+            throw new ReviewNotFoundException(REVIEW_NOT_FOUND);
+        }
 
         return this.iReviewConverter.converterList(reviewList, ReviewDto.class);
     }
@@ -43,7 +45,8 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ResponseEntity<Object> delete(Long id) {
-        Review review = this.iReviewRepository.findById(id).orElse(null);
+        Review review = this.iReviewRepository.findById(id)
+                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
         this.iReviewRepository.delete(review);
         return ResponseEntity.status(HttpStatus.OK).body("Review deleted");
     }
@@ -52,7 +55,8 @@ public class ReviewService implements IReviewService {
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
         Review oldReviewAttributes = this.iReviewRepository.findById(id).orElse(null);
 
-        Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId()).orElse(null);
+        Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
+                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
         oldReviewAttributes.setReview(reviewUpdateDto.getReview());
         oldReviewAttributes.setRatingId(rating);
 

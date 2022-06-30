@@ -19,6 +19,6 @@ public class RatingDto {
     private Long id;
 
     @NotEmpty
-    @Size(min = 1, max = 5, message = "Rate has to be between 1 and 5")
+    @Pattern(regexp="(?i)(?:1)?|(?i)(?:2)?|(?i)(?:3)?|(?i)(?:4)?|(?i)(?:5)?",message = "Rate should be a string of a number between 1-5!")
     private String rate;
 }
