@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @EqualsAndHashCode
 //@Entity
 public class Director {

@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 //@Entity
 @EqualsAndHashCode
 public class Movie {
