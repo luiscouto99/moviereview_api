@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface IGenericService<Dto, UpdateDto>{
-    List<Dto> getAll();
-    Dto add(Dto dto);
+public interface IGenericService<OutDto,InDto,UpdateDto>{
+    List<OutDto> getAll();
+    OutDto add(InDto dto);
     ResponseEntity<Object> delete(Long id);
-    Dto update(Long id, UpdateDto updateDto);
+    OutDto update(Long id, UpdateDto updateDto);
 }
