@@ -1,15 +1,28 @@
 package mindswap.academy.moviereview_api.persistence.model.review.rating;
 
 import lombok.*;
+import mindswap.academy.moviereview_api.persistence.model.review.Review;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Set;
 
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
+@Entity
 @EqualsAndHashCode
-//@Entity
 public class Rating {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true, updatable = false)
+    private Long id;
+
+    @Column(nullable = false)
+    private Long rating;
+
+    @OneToMany(mappedBy = "ratingId")
+    private Set<Review> reviewList;
 }
