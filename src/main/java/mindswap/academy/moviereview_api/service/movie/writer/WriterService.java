@@ -5,7 +5,7 @@ import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.writer.IWriterConverter;
 import mindswap.academy.moviereview_api.exception.NotFound;
-import mindswap.academy.moviereview_api.persistence.model.movie.Writer.Writer;
+import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

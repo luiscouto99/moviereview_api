@@ -1,10 +1,12 @@
 package mindswap.academy.moviereview_api.persistence.model.user;
 
 import lombok.*;
+import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Getter
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
@@ -23,6 +26,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id_fk", referencedColumnName = "id")
     private Role roleId;
+
+    @OneToMany(mappedBy = "userId")
+    private List<Review> reviewList;
 
     @Column(nullable = false)
     private String firstName;

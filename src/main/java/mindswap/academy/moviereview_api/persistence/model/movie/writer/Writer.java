@@ -1,7 +1,6 @@
-package mindswap.academy.moviereview_api.persistence.model.movie.Writer;
+package mindswap.academy.moviereview_api.persistence.model.movie.writer;
 
 import lombok.*;
-import mindswap.academy.moviereview_api.dataloader.Actors;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 
 import javax.persistence.*;

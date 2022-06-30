@@ -1,7 +1,9 @@
 package mindswap.academy.moviereview_api.persistence.model.review;
 
 import lombok.*;
+import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import mindswap.academy.moviereview_api.persistence.model.user.User;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,6 +12,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Builder
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review {
@@ -26,11 +29,11 @@ public class Review {
     @JoinColumn(name = "rate_id_fk")
     private Rating ratingId;
 
-    //@ManyToOne(cascade = CascadeType.MERGE)
-    //@JoinColumn(name = "movie_id_fk")
-    //private Movie movieId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "movie_id_fk")
+    private Movie movieId;
 
-    //@ManyToOne(cascade = CascadeType.MERGE)
-    //@JoinColumn(name = "user_id_fk")
-    //private User userId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id_fk")
+    private User userId;
 }

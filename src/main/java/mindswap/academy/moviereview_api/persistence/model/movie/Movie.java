@@ -1,14 +1,11 @@
 package mindswap.academy.moviereview_api.persistence.model.movie;
 
 import lombok.*;
-import mindswap.academy.moviereview_api.dataloader.Actors;
-import mindswap.academy.moviereview_api.dataloader.Directors;
-import mindswap.academy.moviereview_api.dataloader.Genre2;
-import mindswap.academy.moviereview_api.dataloader.Writer1;
-import mindswap.academy.moviereview_api.persistence.model.movie.Writer.Writer;
+import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
+import mindswap.academy.moviereview_api.persistence.model.review.Review;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,20 +18,31 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class Movie {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
+
     @Column
     private String title;
+
     @Column
     private String fullTitle;
+
     @Column
     private String year;
+
     @Column
     private String releaseDate;
+
     @Column
     private String runtimeStr;
+
+    @OneToMany(mappedBy = "movieId")
+    private List<Review> reviewList;
+
     @ManyToMany
     @JoinTable(
             name = "actor_movie_list",
@@ -42,6 +50,7 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
     private List<Actor> actorList;
+
     @ManyToMany
     @JoinTable(
             name = "director_movie_list",
@@ -49,6 +58,7 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "director_id")
     )
     private List<Director> directorList;
+
     @ManyToMany
     @JoinTable(
             name = "writer_movie_list",
@@ -56,6 +66,7 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "writer_id")
     )
     private List<Writer> writerList;
+
     @ManyToMany
     @JoinTable(
             name = "genre_movie_list",
@@ -63,6 +74,7 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<Genre> genreList;
+
     @Column
     private String contentRating;
 }

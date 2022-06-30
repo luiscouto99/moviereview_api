@@ -8,15 +8,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/movie")
 public class MovieController {
+
     private final IMovieService movieService;
+
     @GetMapping
     public List<OutMovieDto> getAll() {
         return this.movieService.getAll();
     }
+
     @PostMapping
     public void add(@RequestBody MovieDto movieDto) {
         this.movieService.add(movieDto);

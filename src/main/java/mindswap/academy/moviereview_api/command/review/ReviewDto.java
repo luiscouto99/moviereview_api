@@ -10,7 +10,6 @@ import javax.validation.constraints.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReviewDto {
     private Long id;
 
@@ -22,4 +21,10 @@ public class ReviewDto {
     @Min(value = 1, message = "The ratingId has to be a number between 1-5")
     @Max(value = 5, message = "The ratingId has to be a number between 1-5")
     private Long ratingId;
+
+    @NotNull(message = "moviedId can't be empty")
+    private Long movieId;
+
+    @NotNull(message = "userId can't be empty")
+    private Long userId;
 }
