@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface IUserService extends IGenericService<UserDto, UserUpdateDto> {
+public interface IUserService extends IGenericService<UserDto, UserDto, UserUpdateDto> {
     List<UserDto> getAll();
     UserDto add(UserDto userDto);
     ResponseEntity<Object> delete(Long id);

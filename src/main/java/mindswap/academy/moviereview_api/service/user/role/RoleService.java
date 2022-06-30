@@ -54,7 +54,7 @@ public class RoleService implements IRoleService {
         Role role = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
 
-        Role updatedRole = this.CONVERTER.updateDtoToEntity(roleUpdateDto, role);
+        Role updatedRole = this.CONVERTER.converterUpdate(roleUpdateDto, role);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedRole), RoleDto.class);
     }
