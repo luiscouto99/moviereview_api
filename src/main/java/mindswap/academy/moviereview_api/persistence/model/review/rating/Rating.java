@@ -13,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EqualsAndHashCode
+@Table (name = "ratings")
 public class Rating {
 
     @Id
@@ -20,8 +21,8 @@ public class Rating {
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private Long rating;
+    @Column(nullable = false, unique = true)
+    private String rate;
 
     @OneToMany(mappedBy = "ratingId")
     private Set<Review> reviewList;
