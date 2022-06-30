@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Getter
@@ -14,12 +12,12 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class UserDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotEmpty
+    @NotNull
+    @Min(1)
     private Long roleId;
 
     @NotEmpty
@@ -33,9 +31,12 @@ public class UserDto {
     @NotNull
     @DateTimeFormat
     private LocalDate dateOfBirth;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate dateOfAccountCreation = LocalDate.now();
 
     @NotEmpty
     @Size(min = 8, max = 30)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }

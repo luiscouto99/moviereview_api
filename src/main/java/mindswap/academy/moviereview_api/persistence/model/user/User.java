@@ -20,8 +20,8 @@ public class User {
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "roleId", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "role_id_fk", referencedColumnName = "id")
     private Role roleId;
 
     @Column(nullable = false)

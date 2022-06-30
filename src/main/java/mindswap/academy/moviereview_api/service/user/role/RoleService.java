@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.role.RoleDto;
 import mindswap.academy.moviereview_api.command.user.role.RoleUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.role.IRoleConverter;
+import mindswap.academy.moviereview_api.exceptions.RoleNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,11 @@ public class RoleService implements IRoleService {
 
     @Override
     public RoleDto update(Long id, RoleUpdateDto roleUpdateDto) {
-        return null;
+        Role role = this.REPOSITORY.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        Role updatedRole = this.CONVERTER.updateDtoToEntity(roleUpdateDto, role);
+
+        return this.CONVERTER.converter(
+                this.REPOSITORY.save(updatedRole), RoleDto.class);
     }
 }

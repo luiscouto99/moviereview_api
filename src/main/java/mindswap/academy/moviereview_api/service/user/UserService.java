@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
+import mindswap.academy.moviereview_api.exceptions.RoleNotFoundException;
 import mindswap.academy.moviereview_api.exceptions.UserNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
+import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.ROLE_NOT_FOUND;
 import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.USER_NOT_FOUND;
 
 @Service
@@ -21,6 +24,7 @@ import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.USER
 public class UserService implements IUserService {
     private final IUserRepository REPOSITORY;
     private final IUserConverter CONVERTER;
+    private final IRoleRepository ROLE_REPOSITORY;
 
     @Override
     public List<UserDto> getAll() {
@@ -30,6 +34,8 @@ public class UserService implements IUserService {
 
     @Override
     public UserDto add(UserDto userDto) {
+        this.ROLE_REPOSITORY.findById(userDto.getRoleId())
+                .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
         User user = this.CONVERTER.converter(userDto, User.class);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(user), UserDto.class);

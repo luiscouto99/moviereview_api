@@ -20,9 +20,9 @@ public class Role {
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String role;
+    @Column(nullable = false, unique = true)
+    private String roleName;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "roleId")
     private List<User> users;
 }
