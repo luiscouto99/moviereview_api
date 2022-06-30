@@ -39,7 +39,7 @@ public class ReviewService implements IReviewService{
     }
 
     @Override
-    public ResponseEntity<HttpStatus> delete(Long id) {
+    public ResponseEntity<Object> delete(Long id) {
         return null;
     }
 

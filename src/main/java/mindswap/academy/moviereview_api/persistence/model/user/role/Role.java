@@ -23,7 +23,6 @@ public class Role {
     @Column(nullable = false)
     private String role;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "role")
     private List<User> users;
 }

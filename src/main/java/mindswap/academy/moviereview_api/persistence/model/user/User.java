@@ -1,8 +1,10 @@
 package mindswap.academy.moviereview_api.persistence.model.user;
 
 import lombok.*;
+import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Builder
 @Getter
@@ -20,5 +22,18 @@ public class User {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "roleId", referencedColumnName = "id")
-    private String role;
+    private Role role;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
+    private LocalDate dateOfAccountCreation;
+
+    @Column(nullable = false)
+    private String password;
 }
