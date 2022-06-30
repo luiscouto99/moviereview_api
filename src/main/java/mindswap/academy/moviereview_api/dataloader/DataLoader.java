@@ -40,11 +40,12 @@ public class DataLoader implements ApplicationRunner {
             this.iRatingRepository.saveAll(ratingList);
 
 
-//        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161%22,MovieSummary.class);
         List<Role> roles = Arrays.asList(
                 Role.builder().roleName("User").build(),
                 Role.builder().roleName("Admin").build());
         this.ROLE_REPOSITORY.saveAll(roles);
+
+//        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161%22,MovieSummary.class);
 
         //        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161",MovieSummary.class);
 //        assert movieSummary != null;

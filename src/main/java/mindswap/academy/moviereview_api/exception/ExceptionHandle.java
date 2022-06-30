@@ -1,17 +1,13 @@
 package mindswap.academy.moviereview_api.exception;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 public class ExceptionHandle extends ResponseEntityExceptionHandler {
@@ -20,6 +16,9 @@ public class ExceptionHandle extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
+
+    @ExceptionHandler(value = {PSQLException.class})
+    protected ResponseEntity<Object> roleHandler(RuntimeException ex, WebRequest request) {
+        return handleExceptionInternal(ex, "Role is still attached to any user", new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
 }
-
-
