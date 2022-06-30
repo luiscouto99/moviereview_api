@@ -20,7 +20,7 @@ import static mindswap.academy.moviereview_api.exceptions.ExceptionMessages.USER
 @AllArgsConstructor
 public class UserService implements IUserService {
     private final IUserRepository REPOSITORY;
-    private final IUserConverter<User, UserUpdateDto> CONVERTER;
+    private final IUserConverter CONVERTER;
 
     @Override
     public List<UserDto> getAll() {
@@ -40,7 +40,7 @@ public class UserService implements IUserService {
         Optional<User> user = this.REPOSITORY.findById(id);
         if (user.isEmpty())
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-        this.REPOSITORY.delete(user.get());
+        this.REPOSITORY.deleteById(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
 

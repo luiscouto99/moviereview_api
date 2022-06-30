@@ -22,7 +22,7 @@ public class User {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "roleId", referencedColumnName = "id")
-    private Role role;
+    private Role roleId;
 
     @Column(nullable = false)
     private String firstName;

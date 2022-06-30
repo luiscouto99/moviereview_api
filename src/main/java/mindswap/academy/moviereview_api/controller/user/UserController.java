@@ -7,6 +7,7 @@ import mindswap.academy.moviereview_api.service.user.IUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,17 +22,18 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto add(UserDto userDto) {
+    public UserDto addUser(@Valid @RequestBody UserDto userDto) {
         return this.USER_SERVICE.add(userDto);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> delete(Long id) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
         return this.USER_SERVICE.delete(id);
     }
 
-    @PutMapping
-    public UserDto update(Long id, UserUpdateDto userUpdateDto) {
+    @PutMapping("{id}")
+    public UserDto updateUser(@PathVariable("id") Long id,
+                              @Valid @RequestBody UserUpdateDto userUpdateDto) {
         return this.USER_SERVICE.update(id, userUpdateDto);
     }
 }
