@@ -7,15 +7,18 @@ import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
 import mindswap.academy.moviereview_api.exception.ReviewNotFoundException;
 import mindswap.academy.moviereview_api.exception.UserNotFoundException;
+import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class ReviewService implements IReviewService {
     private final IReviewConverter iReviewConverter;
     private final IRatingRepository iRatingRepository;
     private final IUserRepository iUserRepository;
+    private final IMovieRepository iMovieRepository;
+
 
     @Override
     public List<ReviewDto> getAll() {
@@ -53,6 +58,13 @@ public class ReviewService implements IReviewService {
     public ReviewDto add(ReviewDto reviewDto) {
         Review review = this.iReviewConverter.converter(reviewDto, Review.class);
         this.iReviewRepository.save(review);
+
+        Movie movie = this.iMovieRepository.findById(reviewDto.getMovieId())
+                .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
+        List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
+
+        review.setTotalReviews(movieReviews.size());
+
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
 

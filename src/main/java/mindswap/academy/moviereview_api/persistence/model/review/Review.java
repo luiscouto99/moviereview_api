@@ -25,6 +25,8 @@ public class Review {
     @Column(nullable = false)
     private String review;
 
+    private int totalReviews;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "rate_id_fk")
     private Rating ratingId;
