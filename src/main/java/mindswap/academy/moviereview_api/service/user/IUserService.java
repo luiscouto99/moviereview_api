@@ -15,4 +15,5 @@ public interface IUserService extends IGenericService<UserDto, UserDto, UserUpda
     UserDto add(UserDto userDto);
     ResponseEntity<Object> delete(Long id);
     UserDto update(Long id, UserUpdateDto userUpdateDto);
+    UserDto getUser(Long id);
 }
