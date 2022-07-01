@@ -34,6 +34,13 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public UserDto getUser(Long id) {
+        User user = this.REPOSITORY.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        return this.CONVERTER.converter(user, UserDto.class);
+    }
+
+    @Override
     public UserDto add(UserDto userDto) {
         this.ROLE_REPOSITORY.findById(userDto.getRoleId())
                 .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
