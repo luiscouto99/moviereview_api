@@ -4,11 +4,15 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
+import mindswap.academy.moviereview_api.converter.user.IUserConverter;
 import mindswap.academy.moviereview_api.exception.ReviewNotFoundException;
+import mindswap.academy.moviereview_api.exception.UserNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import mindswap.academy.moviereview_api.persistence.model.user.User;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
+import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ public class ReviewService implements IReviewService {
     private final IReviewRepository iReviewRepository;
     private final IReviewConverter iReviewConverter;
     private final IRatingRepository iRatingRepository;
+    private final IUserRepository iUserRepository;
 
     @Override
     public List<ReviewDto> getAll() {
@@ -34,6 +39,14 @@ public class ReviewService implements IReviewService {
         }
 
         return this.iReviewConverter.converterList(reviewList, ReviewDto.class);
+    }
+
+    @Override
+    public List<ReviewDto> getReviewsFromUser(Long id) {
+        User user = this.iUserRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        return this.iReviewConverter.converterList(user.getReviewList(), ReviewDto.class);
     }
 
     @Override
@@ -53,7 +66,8 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
-        Review oldReviewAttributes = this.iReviewRepository.findById(id).orElse(null);
+        Review oldReviewAttributes = this.iReviewRepository.findById(id)
+                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
 
         Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
                 .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));

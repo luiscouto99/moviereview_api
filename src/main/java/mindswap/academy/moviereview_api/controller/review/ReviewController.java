@@ -22,6 +22,11 @@ public class ReviewController {
         return this.reviewService.getAll();
     }
 
+    @GetMapping("/byuser/{id}")
+    public List<ReviewDto> getReviewsFromUser(@PathVariable("id") Long id) {
+        return this.reviewService.getReviewsFromUser(id);
+    }
+
     @PostMapping
     public ReviewDto add(@Valid @RequestBody ReviewDto reviewDto) {
         return this.reviewService.add(reviewDto);

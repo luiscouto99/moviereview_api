@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.dataloader;
 
 import lombok.RequiredArgsConstructor;
+import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.converter.movie.IMovieConverter;
 import mindswap.academy.moviereview_api.dataloader.movieloader.MovieList;
 import mindswap.academy.moviereview_api.command.movie.MovieApiDto;
@@ -44,6 +45,7 @@ public class DataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
+        // review
         List<Rating> ratingList = new ArrayList<>(Arrays.asList(
                 Rating.builder().rate("★✰✰✰✰").build(),
                 Rating.builder().rate("★★✰✰✰").build(),
@@ -51,13 +53,14 @@ public class DataLoader implements ApplicationRunner {
                 Rating.builder().rate("★★★★✰").build(),
                 Rating.builder().rate("★★★★★").build()
         ));
-
         this.iRatingRepository.saveAll(ratingList);
 
-        List<Role> roles = Arrays.asList(
+        // user
+        List<Role> roleList = new ArrayList<>(Arrays.asList(
                 Role.builder().roleName("User").build(),
-                Role.builder().roleName("Admin").build());
-        this.ROLE_REPOSITORY.saveAll(roles);
+                Role.builder().roleName("Admin").build()
+        ));
+        this.ROLE_REPOSITORY.saveAll(roleList);
 
 
 //        MovieList movieId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/k_f19x9ubq", MovieList.class);
