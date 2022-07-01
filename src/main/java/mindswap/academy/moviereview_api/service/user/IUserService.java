@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface IUserService extends IGenericService<UserDto, UserDto, UserUpdateDto> {
     List<UserDto> getAll();
+    UserDto getUser(Long id);
     UserDto add(UserDto userDto);
     ResponseEntity<Object> delete(Long id);
     UserDto update(Long id, UserUpdateDto userUpdateDto);

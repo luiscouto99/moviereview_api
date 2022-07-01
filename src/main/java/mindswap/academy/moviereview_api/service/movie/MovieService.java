@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MovieService implements IMovieService{
-    private final IMovieConverter movieConverter;
     private final IMovieRepository movieRepository;
+    private final IMovieConverter movieConverter;
     @Override
     public List<OutMovieDto> getAll() {
         List<Movie> movieList = this.movieRepository.findAll();

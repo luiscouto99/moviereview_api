@@ -21,17 +21,22 @@ public class UserController {
         return this.USER_SERVICE.getAll();
     }
 
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable("id") Long id) {
+        return this.USER_SERVICE.getUser(id);
+    }
+
     @PostMapping
     public UserDto addUser(@Valid @RequestBody UserDto userDto) {
         return this.USER_SERVICE.add(userDto);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
         return this.USER_SERVICE.delete(id);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public UserDto updateUser(@PathVariable("id") Long id,
                               @Valid @RequestBody UserUpdateDto userUpdateDto) {
         return this.USER_SERVICE.update(id, userUpdateDto);
