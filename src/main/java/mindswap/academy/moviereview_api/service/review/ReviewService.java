@@ -66,10 +66,12 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
-        Review oldReviewAttributes = this.iReviewRepository.findById(id).orElse(null);
+        Review oldReviewAttributes = this.iReviewRepository.findById(id)
+                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
 
         Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
                 .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
+
         oldReviewAttributes.setReview(reviewUpdateDto.getReview());
         oldReviewAttributes.setRatingId(rating);
 
