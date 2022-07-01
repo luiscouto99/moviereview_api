@@ -1,9 +1,11 @@
 package mindswap.academy.moviereview_api.persistence.model.review.rating;
 
 import lombok.*;
+import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -25,4 +27,6 @@ public class Rating {
 
     @OneToMany(mappedBy = "ratingId")
     private Set<Review> reviewList;
+    @OneToMany(mappedBy = "ratingId")
+    private List<Movie> movieList;
 }

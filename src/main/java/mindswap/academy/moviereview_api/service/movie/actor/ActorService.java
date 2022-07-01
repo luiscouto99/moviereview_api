@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
 import mindswap.academy.moviereview_api.command.movie.actor.ActorUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.actor.IActorConverter;
-import mindswap.academy.moviereview_api.exception.NotFound;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActorRepository;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class ActorService implements IActorService {
 
     @Override
     public ActorDto update(Long id, ActorUpdateDto actor) {
-        Actor oldActor = this.actorRepository.findById(id).orElseThrow(() -> new NotFound("Actor not found"));
+        Actor oldActor = this.actorRepository.findById(id).orElseThrow(() -> new NotFoundException("Actor not found"));
         Actor updatedActor = this.actorRepository.save(this.actorConverter.converterUpdate(actor, oldActor));
         return this.actorConverter.converter(updatedActor,ActorDto.class);
     }

@@ -29,17 +29,18 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {
-            EmailAlreadyRegisteredException.class,
-            RatingNotFoundException.class,
-            ReviewNotFoundException.class,
-            RoleAlreadyExistsException.class,
-            RoleNotFoundException.class,
-            UserNotFoundException.class
-    })
-    public ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
-    } @ExceptionHandler(value = BadRequestException.class)
+//    @ExceptionHandler(value = {
+//            EmailAlreadyRegisteredException.class,
+//            RatingNotFoundException.class,
+//            ReviewNotFoundException.class,
+//            RoleAlreadyExistsException.class,
+//            RoleNotFoundException.class,
+//            UserNotFoundException.class
+//    })
+//    public ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
+//        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+//    }
+    @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
@@ -47,7 +48,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> conflictHandler(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
-    @ExceptionHandler(value = NotFound.class)
+    @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<Object> notFoundHandler(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }

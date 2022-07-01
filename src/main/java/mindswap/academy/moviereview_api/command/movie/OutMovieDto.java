@@ -6,6 +6,8 @@ import mindswap.academy.moviereview_api.command.movie.director.DirectorDto;
 import mindswap.academy.moviereview_api.command.movie.genre.GenreDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
+import mindswap.academy.moviereview_api.command.review.rating.RatingDto;
+import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 
 import java.util.List;
 
@@ -26,4 +28,5 @@ public class OutMovieDto {
     private List<DirectorDto> directorList;
     private List<WriterDto> writerList;
     private List<GenreDto> genreList;
+    private RatingDto ratingId;
 }

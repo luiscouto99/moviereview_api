@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.director.DirectorDto;
 import mindswap.academy.moviereview_api.command.movie.director.DirectorUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.director.IDirectorConverter;
-import mindswap.academy.moviereview_api.exception.NotFound;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
 import mindswap.academy.moviereview_api.persistence.repository.movie.director.IDirectorRepository;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class DirectorService implements IDirectorService {
 
     @Override
     public DirectorDto update(Long id, DirectorUpdateDto directorUpdateDto) {
-        Director oldDirector = this.directorRepository.findById(id).orElseThrow(() -> new NotFound("Director not found"));
+        Director oldDirector = this.directorRepository.findById(id).orElseThrow(() -> new NotFoundException("Director not found"));
         Director updatedDirector = this.directorRepository.save(this.directorConverter.converterUpdate(directorUpdateDto, oldDirector));
         return this.directorConverter.converter(updatedDirector, DirectorDto.class);
     }

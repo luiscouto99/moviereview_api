@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.role.RoleDto;
 import mindswap.academy.moviereview_api.command.user.role.RoleUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.role.IRoleConverter;
+import mindswap.academy.moviereview_api.exception.ConflictException;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.exception.RoleAlreadyExistsException;
 import mindswap.academy.moviereview_api.exception.RoleNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
@@ -32,7 +34,7 @@ public class RoleService implements IRoleService {
     @Override
     public RoleDto add(RoleDto roleDto) {
         this.REPOSITORY.findByroleName(roleDto.getRoleName())
-                .ifPresent(role -> {throw new RoleAlreadyExistsException(ROLE_ALREADY_EXISTS);});
+                .ifPresent(role -> {throw new ConflictException(ROLE_ALREADY_EXISTS);});
         Role role = this.CONVERTER.converter(roleDto, Role.class);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(role), RoleDto.class);
@@ -49,9 +51,9 @@ public class RoleService implements IRoleService {
     @Override
     public RoleDto update(Long id, RoleUpdateDto roleUpdateDto) {
         this.REPOSITORY.findByroleName(roleUpdateDto.getRoleName())
-                .ifPresent(role -> {throw new RoleAlreadyExistsException(ROLE_ALREADY_EXISTS);});
+                .ifPresent(role -> {throw new ConflictException(ROLE_ALREADY_EXISTS);});
         Role role = this.REPOSITORY.findById(id)
-                .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
 
         Role updatedRole = this.CONVERTER.converterUpdate(roleUpdateDto, role);
         return this.CONVERTER.converter(

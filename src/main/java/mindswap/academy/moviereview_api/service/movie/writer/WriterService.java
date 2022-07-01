@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.writer.IWriterConverter;
-import mindswap.academy.moviereview_api.exception.NotFound;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ public class WriterService implements IWriterService{
 
     @Override
     public WriterDto update(Long id, WriterUpdateDto writerUpdateDto) {
-        Writer oldWriter = this.writerRepository.findById(id).orElseThrow(() -> new NotFound("Writer not found"));
+        Writer oldWriter = this.writerRepository.findById(id).orElseThrow(() -> new NotFoundException("Writer not found"));
         Writer updatedWriter = this.writerRepository.save(this.writerConverter.converterUpdate(writerUpdateDto, oldWriter));
         return this.writerConverter.converter(updatedWriter, WriterDto.class);
     }

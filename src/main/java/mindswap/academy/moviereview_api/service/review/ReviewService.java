@@ -5,6 +5,7 @@ import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.exception.ReviewNotFoundException;
 import mindswap.academy.moviereview_api.exception.UserNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
@@ -35,7 +36,7 @@ public class ReviewService implements IReviewService {
         List<Review> reviewList = this.iReviewRepository.findAll();
 
         if (reviewList.isEmpty()) {
-            throw new ReviewNotFoundException(REVIEW_NOT_FOUND);
+            throw new NotFoundException(REVIEW_NOT_FOUND);
         }
 
         return this.iReviewConverter.converterList(reviewList, ReviewDto.class);
@@ -44,7 +45,7 @@ public class ReviewService implements IReviewService {
     @Override
     public List<ReviewDto> getReviewsFromUser(Long id) {
         User user = this.iUserRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         return this.iReviewConverter.converterList(user.getReviewList(), ReviewDto.class);
     }
@@ -59,7 +60,7 @@ public class ReviewService implements IReviewService {
     @Override
     public ResponseEntity<Object> delete(Long id) {
         Review review = this.iReviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
         this.iReviewRepository.delete(review);
         return ResponseEntity.status(HttpStatus.OK).body("Review deleted");
     }
@@ -67,10 +68,10 @@ public class ReviewService implements IReviewService {
     @Override
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
         Review oldReviewAttributes = this.iReviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
         Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
-                .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
         oldReviewAttributes.setReview(reviewUpdateDto.getReview());
         oldReviewAttributes.setRatingId(rating);

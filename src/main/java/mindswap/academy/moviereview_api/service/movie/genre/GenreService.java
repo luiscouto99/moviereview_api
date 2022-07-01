@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.genre.GenreDto;
 import mindswap.academy.moviereview_api.command.movie.genre.GenreUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.genre.IGenreConverter;
-import mindswap.academy.moviereview_api.exception.NotFound;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class GenreService implements IGenreService {
 
     @Override
     public GenreDto update(Long id, GenreUpdateDto genreUpdateDto) {
-        Genre oldGenre = this.genreRepository.findById(id).orElseThrow(() -> new NotFound("Genre not found"));
+        Genre oldGenre = this.genreRepository.findById(id).orElseThrow(() -> new NotFoundException("Genre not found"));
         Genre updatedGenre = this.genreRepository.save(this.genreConverter.converterUpdate(genreUpdateDto, oldGenre));
         return this.genreConverter.converter(updatedGenre, GenreDto.class);
     }

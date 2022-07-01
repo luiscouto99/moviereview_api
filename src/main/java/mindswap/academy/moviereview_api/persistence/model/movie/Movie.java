@@ -6,6 +6,7 @@ import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
+import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 
 import javax.persistence.*;
 import java.util.List;
@@ -71,7 +72,8 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<Genre> genreList;
-
     @Column
     private String contentRating;
+    @ManyToOne
+    private Rating ratingId;
 }

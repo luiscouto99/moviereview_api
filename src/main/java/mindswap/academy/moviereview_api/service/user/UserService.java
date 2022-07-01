@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
-import mindswap.academy.moviereview_api.exception.EmailAlreadyRegisteredException;
-import mindswap.academy.moviereview_api.exception.RoleNotFoundException;
-import mindswap.academy.moviereview_api.exception.UserNotFoundException;
+import mindswap.academy.moviereview_api.exception.*;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
@@ -36,17 +34,17 @@ public class UserService implements IUserService {
     @Override
     public UserDto getUser(Long id) {
         User user = this.REPOSITORY.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converter(user, UserDto.class);
     }
 
     @Override
     public UserDto add(UserDto userDto) {
         this.ROLE_REPOSITORY.findById(userDto.getRoleId())
-                .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
         this.REPOSITORY.findByEmail(userDto.getEmail())
                 .ifPresent(user -> {
-                    throw new EmailAlreadyRegisteredException(EMAIL_REGISTERED);
+                    throw new ConflictException(EMAIL_REGISTERED);
                 });
 
         User user = this.CONVERTER.converter(userDto, User.class);
@@ -66,11 +64,11 @@ public class UserService implements IUserService {
     @Override
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
         User user = this.REPOSITORY.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
 
         Role role = this.ROLE_REPOSITORY.findById(userUpdateDto.getRoleId())
-                .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
         updatedUser.setRoleId(role);
         updatedUser.getRoleId().setRoleName(null);
         return this.CONVERTER.converter(
