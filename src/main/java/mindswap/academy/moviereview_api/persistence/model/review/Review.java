@@ -6,7 +6,6 @@ import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
