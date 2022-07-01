@@ -71,6 +71,7 @@ public class ReviewService implements IReviewService {
 
         Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
                 .orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
+
         oldReviewAttributes.setReview(reviewUpdateDto.getReview());
         oldReviewAttributes.setRatingId(rating);
 
