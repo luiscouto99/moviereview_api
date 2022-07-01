@@ -5,5 +5,8 @@ import mindswap.academy.moviereview_api.command.movie.MovieUpdateDto;
 import mindswap.academy.moviereview_api.command.movie.OutMovieDto;
 import mindswap.academy.moviereview_api.service.IGenericService;
 
+import java.util.List;
+
 public interface IMovieService extends IGenericService<OutMovieDto,MovieDto,MovieUpdateDto> {
+    List<OutMovieDto> searchBy(Long id, String title, String year, String genre);
 }

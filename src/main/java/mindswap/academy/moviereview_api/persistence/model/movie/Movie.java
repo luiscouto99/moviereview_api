@@ -24,26 +24,23 @@ public class Movie {
 
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
-
     @Column
     private String title;
-
     @Column
     private String fullTitle;
-
     @Column
     private String year;
-
     @Column
     private String releaseDate;
-
     @Column
     private String runtimeStr;
+    @Column
+    private String image;
 
     @OneToMany(mappedBy = "movieId")
     private List<Review> reviewList;
 
-    @ManyToMany
+    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
     @JoinTable(
             name = "actor_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -51,7 +48,7 @@ public class Movie {
     )
     private List<Actor> actorList;
 
-    @ManyToMany
+    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
     @JoinTable(
             name = "director_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -59,7 +56,7 @@ public class Movie {
     )
     private List<Director> directorList;
 
-    @ManyToMany
+    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
     @JoinTable(
             name = "writer_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -67,7 +64,7 @@ public class Movie {
     )
     private List<Writer> writerList;
 
-    @ManyToMany
+    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
     @JoinTable(
             name = "genre_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),

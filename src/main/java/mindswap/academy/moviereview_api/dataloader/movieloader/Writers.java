@@ -1,4 +1,4 @@
-package mindswap.academy.moviereview_api.dataloader;
+package mindswap.academy.moviereview_api.dataloader.movieloader;
 
 import lombok.*;
 @ToString
@@ -7,6 +7,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Directors {
+public class Writers {
     String name;
 }

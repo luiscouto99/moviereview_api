@@ -1,5 +1,6 @@
 package mindswap.academy.moviereview_api.command.movie;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import mindswap.academy.moviereview_api.command.movie.director.DirectorDto;
 import mindswap.academy.moviereview_api.command.movie.genre.GenreDto;
@@ -17,6 +18,7 @@ public class OutMovieDto {
     private Long id;
     private String title;
     private String fullTitle;
+    private String image;
     private String year;
     private String releaseDate;
     private String runtimeStr;

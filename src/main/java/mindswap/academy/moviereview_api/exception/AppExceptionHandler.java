@@ -37,7 +37,18 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
             RoleNotFoundException.class,
             UserNotFoundException.class
     })
-    protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
+    public ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    } @ExceptionHandler(value = BadRequestException.class)
+    public ResponseEntity<Object> badRequestHandler(RuntimeException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+    @ExceptionHandler(value = ConflictException.class)
+    public ResponseEntity<Object> conflictHandler(RuntimeException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+    @ExceptionHandler(value = NotFound.class)
+    public ResponseEntity<Object> notFoundHandler(RuntimeException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 }

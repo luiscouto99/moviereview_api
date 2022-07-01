@@ -18,6 +18,7 @@ public class Director {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
     @ManyToMany(mappedBy = "directorList")
     private List<Movie> movieList;

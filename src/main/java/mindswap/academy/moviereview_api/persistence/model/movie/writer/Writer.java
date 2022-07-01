@@ -19,6 +19,7 @@ public class Writer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
     @ManyToMany(mappedBy = "writerList")
     private List<Movie> movieList;

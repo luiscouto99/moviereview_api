@@ -1,4 +1,4 @@
-package mindswap.academy.moviereview_api.dataloader;
+package mindswap.academy.moviereview_api.dataloader.movieloader;
 
 import lombok.*;
 @ToString
