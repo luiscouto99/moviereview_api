@@ -13,6 +13,7 @@ import javax.validation.constraints.*;
 public class ReviewDto {
     private Long id;
 
+
     @NotEmpty
     @Size(min = 15, message = "A review minimun amount of characters is 15!")
     private String review;
