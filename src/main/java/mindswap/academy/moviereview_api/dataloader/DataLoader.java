@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.dataloader;
 
 import lombok.RequiredArgsConstructor;
+import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
@@ -20,31 +21,29 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 @Component
 public class DataLoader implements ApplicationRunner {
-    private final IRoleRepository ROLE_REPOSITORY;
-
-
     //private final RestTemplate restTemplate;
     private final IRatingRepository iRatingRepository;
+    private final IRoleRepository ROLE_REPOSITORY;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-            List<Rating> ratingList = new ArrayList<>(Arrays.asList(
-                    Rating.builder().rate("★✰✰✰✰").build(),
-                    Rating.builder().rate("★★✰✰✰").build(),
-                    Rating.builder().rate("★★★✰✰").build(),
-                    Rating.builder().rate("★★★★✰").build(),
-                    Rating.builder().rate("★★★★★").build()
-                    ));
+        // review
+        List<Rating> ratingList = new ArrayList<>(Arrays.asList(
+                Rating.builder().rate("★✰✰✰✰").build(),
+                Rating.builder().rate("★★✰✰✰").build(),
+                Rating.builder().rate("★★★✰✰").build(),
+                Rating.builder().rate("★★★★✰").build(),
+                Rating.builder().rate("★★★★★").build()
+        ));
+        this.iRatingRepository.saveAll(ratingList);
 
-            this.iRatingRepository.saveAll(ratingList);
-
-
-//        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161%22,MovieSummary.class);
-        List<Role> roles = Arrays.asList(
+        // user
+        List<Role> roleList = new ArrayList<>(Arrays.asList(
                 Role.builder().roleName("User").build(),
-                Role.builder().roleName("Admin").build());
-        this.ROLE_REPOSITORY.saveAll(roles);
+                Role.builder().roleName("Admin").build()
+        ));
+        this.ROLE_REPOSITORY.saveAll(roleList);
 
         //        MovieSummary movieSummary = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/tt0111161",MovieSummary.class);
 //        assert movieSummary != null;
