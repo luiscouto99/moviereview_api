@@ -7,12 +7,10 @@ import mindswap.academy.moviereview_api.service.IGenericService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IUserService extends IGenericService<UserDto, UserDto, UserUpdateDto> {
-    List<UserDto> getAll();
     UserDto getUser(Long id);
-    UserDto add(UserDto userDto);
-    ResponseEntity<Object> delete(Long id);
-    UserDto update(Long id, UserUpdateDto userUpdateDto);
+    List<UserDto> search(Long roleId, String firstName, String lastName, String email);
 }

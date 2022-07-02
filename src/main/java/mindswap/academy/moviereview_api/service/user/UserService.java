@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,15 @@ public class UserService implements IUserService {
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converter(user, UserDto.class);
+    }
+
+    @Override
+    public List<UserDto> search(Long roleId, String firstName, String lastName, String email) {
+        if (roleId == null && firstName == null && lastName == null && email == null)
+            throw new BadRequestException(AT_LEAST_1_PARAMETER);
+
+        return this.CONVERTER.converterList(
+                this.REPOSITORY.search(roleId, firstName, lastName, email), UserDto.class);
     }
 
     @Override
