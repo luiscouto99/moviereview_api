@@ -90,6 +90,7 @@ public class ReviewService implements IReviewService {
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
         List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
 
+        // calcular a média dos ratings do filme
         Double movieRating = movieReviews.stream()
                 .mapToLong(x -> x.getRatingId().getId())
                 .average().orElse(0);
@@ -110,6 +111,15 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
+
+        this.iUserRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND)
+                );
+
+        this.iMovieRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND)
+                );
+
         Review oldReviewAttributes = this.iReviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
@@ -118,6 +128,17 @@ public class ReviewService implements IReviewService {
 
         oldReviewAttributes.setReview(reviewUpdateDto.getReview());
         oldReviewAttributes.setRatingId(rating);
+
+        Movie movie = this.iMovieRepository.findById(oldReviewAttributes.getMovieId().getId())
+                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
+        List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
+
+        // calcular a média dos ratings do filme
+        Double movieRating = movieReviews.stream()
+                .mapToLong(x -> x.getRatingId().getId())
+                .average().orElse(0);
+
+        movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
 
         this.iReviewRepository.save(oldReviewAttributes);
         return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
