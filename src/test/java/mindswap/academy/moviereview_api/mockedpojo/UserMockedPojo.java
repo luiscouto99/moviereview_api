@@ -13,7 +13,7 @@ public class UserMockedPojo {
 
     public static final Role ROLE_EXAMPLE = Role.builder()
             .id(1L)
-            .roleName("Client")
+            .roleName("User")
             .build();
 
     public static final User USER_EXAMPLE = User.builder()

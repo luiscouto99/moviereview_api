@@ -1,7 +1,6 @@
-package mindswap.academy.moviereview_api.persistence.model.user;
+package mindswap.academy.moviereview_api.service.user;
 
 import mindswap.academy.moviereview_api.command.user.UserDto;
-import mindswap.academy.moviereview_api.converter.user.IUserConverter;
 import mindswap.academy.moviereview_api.converter.user.UserConverter;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
@@ -18,27 +17,24 @@ import org.modelmapper.ModelMapper;
 import java.util.Optional;
 
 import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserTest {
-
     @Mock
     IUserRepository userRepository;
-
     IUserService userService;
+    @Mock
     IRoleRepository roleRepository;
-
 
     @BeforeEach
     public void setup() {
         this.userService = new UserService(userRepository, new UserConverter(new ModelMapper()), roleRepository);
     }
 
-
     @Nested
-    class getUserById {
+    class getUser {
 
         @Test
         void testGetUserById() {
@@ -51,4 +47,15 @@ class UserTest {
         }
     }
 
+    @Test
+    void testAddUser() {
+        when(roleRepository.findById(1L))
+                .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
+        when(userRepository.save(USER_EXAMPLE))
+                .thenReturn(USER_EXAMPLE);
+
+        UserDto result = userService.add(USER_DTO_EXAMPLE);
+
+        assertEquals(USER_DTO_EXAMPLE, result);
+    }
 }
