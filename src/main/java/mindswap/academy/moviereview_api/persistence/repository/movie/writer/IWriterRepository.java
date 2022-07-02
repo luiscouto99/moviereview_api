@@ -4,7 +4,6 @@ import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Map;
 import java.util.Optional;
 
 

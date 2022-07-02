@@ -3,6 +3,8 @@ package mindswap.academy.moviereview_api.command.movie.director;
 import lombok.*;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -11,5 +13,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class DirectorUpdateDto {
+    @NotEmpty
+    @Size(max = 50,message = " max size 50")
     private String name;
 }

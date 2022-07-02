@@ -40,10 +40,10 @@ public class Movie {
 
     private int totalReviews;
 
-    @OneToMany(mappedBy = "movieId")
+    @OneToMany(mappedBy = "movieId",cascade = CascadeType.REMOVE)
     private List<Review> reviewList;
 
-    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
             name = "actor_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -51,7 +51,7 @@ public class Movie {
     )
     private List<Actor> actorList;
 
-    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
             name = "director_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -59,7 +59,7 @@ public class Movie {
     )
     private List<Director> directorList;
 
-    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
             name = "writer_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -67,7 +67,7 @@ public class Movie {
     )
     private List<Writer> writerList;
 
-    @ManyToMany//(cascade = {CascadeType.ALL,CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
             name = "genre_movie_list",
             joinColumns = @JoinColumn(name = "movie_id"),

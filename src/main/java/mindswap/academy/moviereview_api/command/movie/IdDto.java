@@ -8,5 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IdDto {
-    private String id;
+    private Long id;
 }

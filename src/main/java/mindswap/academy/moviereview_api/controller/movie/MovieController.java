@@ -38,6 +38,10 @@ public class MovieController {
     public List<OutMovieDto> searchByActor(@RequestParam(value = "name", required = true) String name) {
         return this.movieService.searchActorMovieList(name);
     }
+    @GetMapping("/search/rating")
+    public List<OutMovieDto> search(@RequestParam(value = "id", required = false) Long id){
+        return this.movieService.searchByMovieRating(id);
+    }
     @PutMapping("/{id}")
     public OutMovieDto update(@PathVariable("id") Long id,@Valid @RequestBody MovieUpdateDto movieUpdateDto) {
         return this.movieService.update(id,movieUpdateDto);

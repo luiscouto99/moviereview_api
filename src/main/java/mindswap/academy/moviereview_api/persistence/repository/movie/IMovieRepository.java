@@ -18,7 +18,8 @@ public interface IMovieRepository extends JpaRepository<Movie, Long> {
             "(movie.year LIKE :year OR :year ISNULL)\n" +
             "AND\n" +
             "(LOWER(movie.content_rating) LIKE LOWER(:contentRanting) OR :contentRanting ISNULL);", nativeQuery = true)
-    List<Movie> searchBy(Long id, String title, String year,String contentRanting);
+    List<Movie> searchBy(Long id, String title, String year, String contentRanting);
+
     @Query(value = "SELECT movie.*\n" +
             "FROM genre \n" +
             "INNER JOIN\n" +
@@ -29,7 +30,8 @@ public interface IMovieRepository extends JpaRepository<Movie, Long> {
             "ON genre_movie_list.movie_id = movie.id\n" +
             "WHERE (LOWER(genre.value)  LIKE LOWER(:genre) OR :genre ISNULL);", nativeQuery = true)
     List<Movie> searchByGenre(String genre);
-    @Query(value ="SELECT movie.*\n" +
+
+    @Query(value = "SELECT movie.*\n" +
             "FROM actor \n" +
             "JOIN\n" +
             "actor_movie_list\n" +
@@ -40,4 +42,9 @@ public interface IMovieRepository extends JpaRepository<Movie, Long> {
             "ON movie.id = actor_movie_list.movie_id \n" +
             "WHERE (LOWER(actor.name) LIKE LOWER(CONCAT('%',:name,'%')) OR :name ISNULL);", nativeQuery = true)
     List<Movie> searchHowManyMoviesActorHasByName(String name);
+
+    @Query(value = "SELECT movie.*\n" +
+            "FROM movie\n" +
+            "WHERE rating_id_fk = :id ;", nativeQuery = true)
+    List<Movie> searchByMovieRating(Long id);
 }

@@ -11,4 +11,5 @@ public interface IMovieService extends IGenericService<OutMovieDto,MovieDto,Movi
     List<OutMovieDto> searchBy(Long id, String title, String year,String contentRanting);
     List<OutMovieDto> searchActorMovieList(String name);
     List<OutMovieDto> searchByGenre(String genre);
+    List<OutMovieDto> searchByMovieRating(Long id);
 }
