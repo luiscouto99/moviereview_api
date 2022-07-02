@@ -27,6 +27,7 @@ public class Rating {
 
     @OneToMany(mappedBy = "ratingId")
     private Set<Review> reviewList;
+
     @OneToMany(mappedBy = "ratingId")
     private List<Movie> movieList;
 }

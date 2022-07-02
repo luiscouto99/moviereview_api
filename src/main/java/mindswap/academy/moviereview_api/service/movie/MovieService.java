@@ -14,6 +14,7 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActo
 import mindswap.academy.moviereview_api.persistence.repository.movie.director.IDirectorRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
+import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class MovieService implements IMovieService {
     private final IWriterRepository writerRepository;
     private final IDirectorRepository directorRepository;
     private final IRatingRepository ratingRepository;
+    private final IReviewRepository reviewRepository;
+
     @Override
     public List<OutMovieDto> getAll() {
         List<Movie> movieList = this.movieRepository.findAll();
@@ -43,16 +46,18 @@ public class MovieService implements IMovieService {
 
     @Override
     public OutMovieDto add(MovieDto movieDto) {
-
         Movie movie = this.movieConverter.converter(movieDto, Movie.class);
+
         if(this.movieRepository.count(Example.of(movie)) != 0){
             throw new ConflictException(MOVIE_ALREADY_EXISTS);
         }
+
         checkIfActorExists(movie);
         checkIfWriterExists(movie);
         checkIfDirectorExists(movie);
         checkIfGenreExists(movie);
         movie.setRatingId(this.ratingRepository.findById(5L).get());
+
         Movie savedMovie = this.movieRepository.save(movie);
         return this.movieConverter.converter(savedMovie, OutMovieDto.class);
     }
