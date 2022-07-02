@@ -79,5 +79,6 @@ public class Movie {
     private String contentRating;
 
     @ManyToOne
+    @JoinColumn(name = "rating_id_fk")
     private Rating ratingId;
 }

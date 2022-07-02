@@ -15,9 +15,13 @@ public class ExceptionMessages {
     public static final String GENRE_ALREADY_EXISTS = "Actor already exists";
     public static final String WRITER_ALREADY_EXISTS = "Actor already exists";
 
-
+    public static final String EMPTY_NAME = "Name cant be empty";
     public static final String ACTOR_NOT_FOUND = "Actor not found";
     public static final String DIRECTOR_NOT_FOUND  = "Director not found";
     public static final String GENRE_NOT_FOUND  = "Genre not found";
     public static final String WRITER_NOT_FOUND  = "Writer not found";
+    public static final String WRITER_IS_BEING_USED  = "Writer is in use and cant be deleted";
+    public static final String GENRE_IS_BEING_USED  = "Genre is in use and cant be deleted";
+    public static final String DIRECTOR_IS_BEING_USED  = "Director is in use and cant be deleted";
+    public static final String ACTOR_IS_BEING_USED  = "Actor is in use and cant be deleted";
 }

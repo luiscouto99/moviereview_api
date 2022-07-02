@@ -4,18 +4,25 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.writer.IWriterConverter;
+import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.WRITER_IS_BEING_USED;
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.WRITER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
-public class WriterService implements IWriterService{
+public class WriterService implements IWriterService {
     private final IWriterConverter writerConverter;
     private final IWriterRepository writerRepository;
+
     @Override
     public List<WriterDto> getAll() {
         List<Writer> writerList = this.writerRepository.findAll();
@@ -25,13 +32,19 @@ public class WriterService implements IWriterService{
     @Override
     public WriterDto add(WriterDto writerDto) {
         Writer writer = this.writerConverter.converter(writerDto, Writer.class);
-        Writer savedWriter= this.writerRepository.save(writer);
+        Writer savedWriter = this.writerRepository.save(writer);
         return this.writerConverter.converter(savedWriter, WriterDto.class);
     }
 
     @Override
     public ResponseEntity<Object> delete(Long id) {
-        return null;
+        this.writerRepository.checkIfWriterIsBeingUsed(id)
+                .ifPresent((writer) -> {
+                    throw new ConflictException(WRITER_IS_BEING_USED);
+                });
+        Writer writer = this.writerRepository.findById(id).orElseThrow(() -> new NotFoundException(WRITER_NOT_FOUND));
+        this.writerRepository.delete(writer);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override

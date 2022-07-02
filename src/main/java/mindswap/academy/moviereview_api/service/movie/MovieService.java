@@ -40,7 +40,7 @@ public class MovieService implements IMovieService {
     @Override
     public List<OutMovieDto> getAll() {
         List<Movie> movieList = this.movieRepository.findAll();
-        if(movieList.isEmpty())throw new NotFoundException(MOVIE_NOT_FOUND);
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
         return this.movieConverter.converterList(movieList, OutMovieDto.class);
     }
 
@@ -48,7 +48,7 @@ public class MovieService implements IMovieService {
     public OutMovieDto add(MovieDto movieDto) {
         Movie movie = this.movieConverter.converter(movieDto, Movie.class);
 
-        if(this.movieRepository.count(Example.of(movie)) != 0){
+        if (this.movieRepository.count(Example.of(movie)) != 0) {
             throw new ConflictException(MOVIE_ALREADY_EXISTS);
         }
 
@@ -65,53 +65,74 @@ public class MovieService implements IMovieService {
     private void checkIfGenreExists(Movie movie) {
         for (int i = 0; i < movie.getGenreList().size(); i++) {
             this.genreRepository.findById(movie.getGenreList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(GENRE_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(GENRE_NOT_FOUND));
         }
     }
 
     private void checkIfDirectorExists(Movie movie) {
         for (int i = 0; i < movie.getDirectorList().size(); i++) {
             this.directorRepository.findById(movie.getDirectorList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(DIRECTOR_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(DIRECTOR_NOT_FOUND));
         }
     }
 
     private void checkIfWriterExists(Movie movie) {
         for (int i = 0; i < movie.getWriterList().size(); i++) {
             this.writerRepository.findById(movie.getWriterList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(WRITER_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(WRITER_NOT_FOUND));
         }
     }
 
     private void checkIfActorExists(Movie movie) {
         for (int i = 0; i < movie.getActorList().size(); i++) {
             this.actorRepository.findById(movie.getActorList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(ACTOR_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(ACTOR_NOT_FOUND));
         }
     }
 
     @Override
     public ResponseEntity<Object> delete(Long id) {
-        Movie movie = this.movieRepository.findById(id).orElseThrow(()->new NotFoundException(MOVIE_NOT_FOUND));
+        Movie movie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
         this.movieRepository.delete(movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
     public OutMovieDto update(Long id, MovieUpdateDto movieUpdateDto) {
-       Movie oldMovie = this.movieRepository.findById(id).orElseThrow(()->new NotFoundException(MOVIE_NOT_FOUND));
-       Movie updatedMovie = this.movieConverter.converterUpdate(movieUpdateDto,oldMovie);
-       this.movieRepository.save(updatedMovie);
-       return this.movieConverter.converter(updatedMovie,OutMovieDto.class);
+        Movie oldMovie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
+        Movie updatedMovie = this.movieConverter.converterUpdate(movieUpdateDto, oldMovie);
+        this.movieRepository.save(updatedMovie);
+        return this.movieConverter.converter(updatedMovie, OutMovieDto.class);
     }
 
     @Override
-    public List<OutMovieDto> searchBy(Long id, String title, String year, String genre) {
-        if (id == null && title == null && year == null && genre == null) {
+    public List<OutMovieDto> searchBy(Long id, String title, String year, String contentRanting) {
+        if (title != null && title.isEmpty()) title = null;
+        if (year != null && year.isEmpty()) year = null;
+//        if (genre != null && genre.isEmpty()) genre = null;
+        if (contentRanting != null && contentRanting.isEmpty()) contentRanting = null;
+
+        if (id == null && title == null && year == null && contentRanting == null) {
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
         }
-        List<Movie> movieList = movieRepository.searchBy(id, title, year, genre);
-        if(movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
+        List<Movie> movieList = movieRepository.searchBy(id, title,year, contentRanting);
+
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
         return this.movieConverter.converterList(movieList, OutMovieDto.class);
+    }
+
+    @Override
+    public List<OutMovieDto> searchActorMovieList(String name) {
+        if (name.isEmpty()) throw new BadRequestException(EMPTY_NAME);
+        List<Movie> movieList = this.movieRepository.searchHowManyMoviesActorHasByName(name);
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
+        return this.movieConverter.converterList(movieList, OutMovieDto.class);
+    }
+
+    @Override
+    public List<OutMovieDto> searchByGenre(String genre) {
+        List<Movie> movieList = movieRepository.searchByGenre(genre);
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
+        return this.movieConverter.converterList(movieList,OutMovieDto.class);
     }
 }

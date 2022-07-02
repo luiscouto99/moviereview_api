@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.director.DirectorDto;
 import mindswap.academy.moviereview_api.command.movie.director.DirectorUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.director.IDirectorConverter;
+import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
+import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.repository.movie.director.IDirectorRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +38,13 @@ public class DirectorService implements IDirectorService {
 
     @Override
     public ResponseEntity<Object> delete(Long id) {
-        return null;
+        this.directorRepository.checkIfDirectorIsBeingUsed(id)
+                .ifPresent((writer) -> {
+                    throw new ConflictException(DIRECTOR_IS_BEING_USED);
+                });
+        Director director = this.directorRepository.findById(id).orElseThrow(() -> new NotFoundException(DIRECTOR_NOT_FOUND));
+        this.directorRepository.delete(director);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
