@@ -23,22 +23,19 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserTest {
-
     @Mock
     IUserRepository userRepository;
-
     IUserService userService;
+    @Mock
     IRoleRepository roleRepository;
-
 
     @BeforeEach
     public void setup() {
         this.userService = new UserService(userRepository, new UserConverter(new ModelMapper()), roleRepository);
     }
 
-
     @Nested
-    class getUserById {
+    class getUser {
 
         @Test
         void testGetUserById() {
@@ -51,4 +48,15 @@ class UserTest {
         }
     }
 
+    @Test
+    void testAddUser() {
+        when(roleRepository.findById(1L))
+                .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
+        when(userRepository.save(USER_EXAMPLE))
+                .thenReturn(USER_EXAMPLE);
+
+        UserDto result = userService.add(USER_DTO_EXAMPLE);
+
+        assertEquals(USER_DTO_EXAMPLE, result);
+    }
 }

@@ -4,6 +4,7 @@ import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.converter.review.ReviewConverter;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
@@ -37,9 +38,15 @@ class ReviewTest {
     @Mock
     IUserRepository iUserRepository;
 
+    IMovieRepository iMovieRepository;
+
     @BeforeEach
     public void setup() {
-        this.iReviewService = new ReviewService(iReviewRepository, new ReviewConverter(new ModelMapper()), iRatingRepository, iUserRepository);
+        this.iReviewService = new ReviewService(iReviewRepository,
+                new ReviewConverter(new ModelMapper()),
+                iRatingRepository,
+                iUserRepository,
+                iMovieRepository);
     }
 
     @Nested
@@ -50,7 +57,7 @@ class ReviewTest {
             when(iUserRepository.findById(1L))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
-            List<ReviewDto> result  = iReviewService.getReviewsFromUser(1L);
+            List<ReviewDto> result = iReviewService.getReviewsFromUser(1L);
 
             assertEquals(List.of(REVIEW_DTO_EXAMPLE), result);
         }
