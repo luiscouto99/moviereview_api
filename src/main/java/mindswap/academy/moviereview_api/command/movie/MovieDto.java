@@ -1,5 +1,6 @@
 package mindswap.academy.moviereview_api.command.movie;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;

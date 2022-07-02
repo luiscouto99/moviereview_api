@@ -29,6 +29,7 @@ public class MovieController {
                                     @RequestParam(value = "genre", required = false) String genre) {
         return this.movieService.searchBy(id, title, year, genre);
     }
+
     @PutMapping("/{id}")
     public OutMovieDto update(@PathVariable("id") Long id,@RequestBody MovieUpdateDto movieUpdateDto) {
         return this.movieService.update(id,movieUpdateDto);

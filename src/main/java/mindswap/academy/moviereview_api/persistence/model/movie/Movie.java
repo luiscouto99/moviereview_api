@@ -38,6 +38,8 @@ public class Movie {
     @Column
     private String image;
 
+    private int totalReviews;
+
     @OneToMany(mappedBy = "movieId")
     private List<Review> reviewList;
 
@@ -72,8 +74,10 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<Genre> genreList;
+
     @Column
     private String contentRating;
+
     @ManyToOne
     private Rating ratingId;
 }

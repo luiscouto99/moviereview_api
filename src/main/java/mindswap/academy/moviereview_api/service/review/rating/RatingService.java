@@ -7,7 +7,10 @@ import mindswap.academy.moviereview_api.converter.review.rating.IRatingConverter
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.exception.RatingNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
+import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
+import mindswap.academy.moviereview_api.service.movie.IMovieService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ public class RatingService implements IRatingService{
 
     private final IRatingRepository iRatingRepository;
     private final IRatingConverter iRatingConverter;
+    private final IMovieRepository iMovieRepository;
+    private final IReviewRepository iReviewRepository;
 
     @Override
     public List<RatingDto> getAll() {

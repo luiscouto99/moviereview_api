@@ -29,4 +29,5 @@ public class OutMovieDto {
     private List<WriterDto> writerList;
     private List<GenreDto> genreList;
     private RatingDto ratingId;
+    private int totalReviews;
 }

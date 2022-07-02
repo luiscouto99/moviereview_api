@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
-import mindswap.academy.moviereview_api.converter.user.IUserConverter;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
-import mindswap.academy.moviereview_api.exception.ReviewNotFoundException;
-import mindswap.academy.moviereview_api.exception.UserNotFoundException;
+import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
@@ -30,6 +29,7 @@ public class ReviewService implements IReviewService {
     private final IReviewConverter iReviewConverter;
     private final IRatingRepository iRatingRepository;
     private final IUserRepository iUserRepository;
+    private final IMovieRepository iMovieRepository;
 
     @Override
     public List<ReviewDto> getAll() {
@@ -54,6 +54,23 @@ public class ReviewService implements IReviewService {
     public ReviewDto add(ReviewDto reviewDto) {
         Review review = this.iReviewConverter.converter(reviewDto, Review.class);
         this.iReviewRepository.save(review);
+
+        Movie movie = this.iMovieRepository.findById(reviewDto.getMovieId())
+                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
+        List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
+
+        Double movieRating = movieReviews.stream()
+                .mapToLong(x -> x.getRatingId().getId())
+                .average().orElse(0);
+
+        movie.setRatingId(
+                this.iRatingRepository.findById(
+                        Math.round(movieRating)).get());
+
+        movie.setTotalReviews(movieReviews.size());
+
+        this.iMovieRepository.save(movie);
+
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
 
