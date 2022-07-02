@@ -17,10 +17,10 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.mockedpojo.ReviewMockedPojo.REVIEW_DTO_EXAMPLE;
-import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.USER_EXAMPLE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static mindswap.academy.moviereview_api.mockedpojo.ReviewMockedPojo.*;
+import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -33,23 +33,23 @@ class ReviewServiceTest {
 
     @Mock
     IUserRepository iUserRepository;
-
     IMovieRepository iMovieRepository;
 
     @BeforeEach
     public void setup() {
-        this.iReviewService = new ReviewService(iReviewRepository,
-                new ReviewConverter(new ModelMapper()),
+        this.iReviewService = new ReviewService(
+                iReviewRepository,
                 iRatingRepository,
                 iUserRepository,
-                iMovieRepository);
+                iMovieRepository,
+                new ReviewConverter(new ModelMapper()));
     }
 
     @Nested
     class getReviewFromUser {
 
         @Test
-        void testGetReviewFromUser() {
+        void testGetReviewsFromUser() {
             when(iUserRepository.findById(1L))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
