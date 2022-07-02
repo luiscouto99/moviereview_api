@@ -42,7 +42,7 @@ public class UserService implements IUserService {
 
     @Override
     public List<UserDto> search(Long roleId, String firstName, String lastName, String email) {
-        if (roleId == null && firstName == null && lastName == null && email == null)
+        if (roleId == null && firstName.equals("") && lastName.equals("") && email.equals(""))
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
 
         return this.CONVERTER.converterList(
