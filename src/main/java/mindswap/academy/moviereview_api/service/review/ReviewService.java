@@ -28,10 +28,10 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 public class ReviewService implements IReviewService {
 
     private final IReviewRepository iReviewRepository;
-    private final IReviewConverter iReviewConverter;
     private final IRatingRepository iRatingRepository;
     private final IUserRepository iUserRepository;
     private final IMovieRepository iMovieRepository;
+    private final IReviewConverter iReviewConverter;
 
     @Override
     public List<ReviewDto> getAll() {

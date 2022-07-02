@@ -1,9 +1,8 @@
 package mindswap.academy.moviereview_api.persistence.model.review;
 
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
-import mindswap.academy.moviereview_api.command.user.UserDto;
-import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.converter.review.ReviewConverter;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
@@ -28,25 +27,29 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ReviewTest {
 
+    IReviewService iReviewService;
     @Mock
     IReviewRepository iReviewRepository;
-
-    IReviewService iReviewService;
     IRatingRepository iRatingRepository;
-
     @Mock
     IUserRepository iUserRepository;
+    IMovieRepository iMovieRepository;
 
     @BeforeEach
     public void setup() {
-        this.iReviewService = new ReviewService(iReviewRepository, new ReviewConverter(new ModelMapper()), iRatingRepository, iUserRepository);
+        this.iReviewService = new ReviewService(
+                iReviewRepository,
+                iRatingRepository,
+                iUserRepository,
+                iMovieRepository,
+                new ReviewConverter(new ModelMapper()));
     }
 
     @Nested
     class getReviewFromUser {
 
         @Test
-        void testGetReviewFromUser() {
+        void testGetReviewsFromUser() {
             when(iUserRepository.findById(1L))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
