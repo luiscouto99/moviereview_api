@@ -3,6 +3,9 @@ package mindswap.academy.moviereview_api.controller.review;
 import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
+import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
+import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import mindswap.academy.moviereview_api.persistence.model.user.User;
 import mindswap.academy.moviereview_api.service.review.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +28,13 @@ public class ReviewController {
     @GetMapping("/byuser/{id}")
     public List<ReviewDto> getReviewsFromUser(@PathVariable("id") Long id) {
         return this.reviewService.getReviewsFromUser(id);
+    }
+
+    @GetMapping("/search")
+    public List<ReviewDto> searchBy(@RequestParam(value = "ratingId", required = false) Long ratingId,
+                                  @RequestParam(value = "movieId", required = false) Long movieId,
+                                  @RequestParam(value = "userId", required = false) Long userId) {
+        return this.reviewService.searchBy(ratingId, movieId, userId);
     }
 
     @PostMapping

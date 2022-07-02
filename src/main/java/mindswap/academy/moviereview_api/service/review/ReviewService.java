@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
+import mindswap.academy.moviereview_api.exception.BadRequestException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
@@ -51,8 +52,28 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
+    public List<ReviewDto> searchBy(Long ratingId, Long movieId, Long userId) {
+        if (ratingId == null && movieId == null && userId == null) {
+            throw new BadRequestException(AT_LEAST_1_PARAMETER);
+        }
+
+        List<Review> reviewList = iReviewRepository.searchBy(ratingId, movieId, userId);
+
+        if(reviewList.isEmpty()) {
+            throw new NotFoundException(REVIEW_NOT_FOUND);
+        }
+
+        return this.iReviewConverter.converterList(reviewList, ReviewDto.class);
+    }
+
+    @Override
     public ReviewDto add(ReviewDto reviewDto) {
         Review review = this.iReviewConverter.converter(reviewDto, Review.class);
+/*
+        if (this.iReviewRepository.findAll().contains(review)) {
+            throw new
+        }*/
+
         this.iReviewRepository.save(review);
 
         Movie movie = this.iMovieRepository.findById(reviewDto.getMovieId())
@@ -63,12 +84,9 @@ public class ReviewService implements IReviewService {
                 .mapToLong(x -> x.getRatingId().getId())
                 .average().orElse(0);
 
-        movie.setRatingId(
-                this.iRatingRepository.findById(
-                        Math.round(movieRating)).get());
+        movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
 
         movie.setTotalReviews(movieReviews.size());
-
         this.iMovieRepository.save(movie);
 
         return this.iReviewConverter.converter(review, ReviewDto.class);

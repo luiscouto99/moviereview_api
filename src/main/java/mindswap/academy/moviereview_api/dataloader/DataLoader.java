@@ -62,7 +62,39 @@ public class DataLoader implements ApplicationRunner {
         ));
         this.ROLE_REPOSITORY.saveAll(roleList);
 
+        List<Director> newDirectorList = new ArrayList<>(Arrays.asList(
+                Director.builder().name("OLA").build(),
+                Director.builder().name("adieus").build(),
+                Director.builder().name("xiu").build()
+        ));
+        List<Writer> newWriterList = new ArrayList<>(Arrays.asList(
+                Writer.builder().name("OLA").build(),
+                Writer.builder().name("adieus").build(),
+                Writer.builder().name("xiu").build()
+        ));
+        List<Actor> newActorList = new ArrayList<>(Arrays.asList(
+                Actor.builder().image("nope").name("oink").build(),
+                Actor.builder().image("nope").name("ole").build(),
+                Actor.builder().image("nope").name("bue").build()
+        ));
+        List<Genre> newGenreList = new ArrayList<>(Arrays.asList(
+                Genre.builder().value("Drama").build(),
+                Genre.builder().value("Action").build(),
+                Genre.builder().value("Fantasy").build()
+        ));
+        this.genreRepository.saveAll(newGenreList);
+        this.actorRepository.saveAll(newActorList);
+        this.writerRepository.saveAll(newWriterList);
+        this.directorRepository.saveAll(newDirectorList);
 
+
+        List<Movie> newMovieList = new ArrayList<>(Arrays.asList(
+                Movie.builder().genreList(newGenreList)
+                        .actorList(newActorList)
+                        .directorList(newDirectorList)
+                        .writerList(newWriterList).build()
+        ));
+        this.movieRepository.saveAll(newMovieList);
 //        MovieList movieId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/k_f19x9ubq", MovieList.class);
 //        for (int i = 0; i < 5; i++) {
 //            MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/" + movieId.getItems().get(i).getId(), MovieApiDto.class);
