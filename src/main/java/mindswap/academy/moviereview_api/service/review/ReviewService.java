@@ -113,12 +113,10 @@ public class ReviewService implements IReviewService {
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
 
         this.iUserRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND)
-                );
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         this.iMovieRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND)
-                );
+                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
 
         Review oldReviewAttributes = this.iReviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
@@ -126,9 +124,18 @@ public class ReviewService implements IReviewService {
         Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
+        updatingReview(reviewUpdateDto, oldReviewAttributes, rating);
+        updateMovieRating(oldReviewAttributes);
+        this.iReviewRepository.save(oldReviewAttributes);
+        return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
+    }
+
+    private void updatingReview(ReviewUpdateDto reviewUpdateDto, Review oldReviewAttributes, Rating rating) {
         oldReviewAttributes.setReview(reviewUpdateDto.getReview());
         oldReviewAttributes.setRatingId(rating);
+    }
 
+    private void updateMovieRating(Review oldReviewAttributes) {
         Movie movie = this.iMovieRepository.findById(oldReviewAttributes.getMovieId().getId())
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
         List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
@@ -139,8 +146,5 @@ public class ReviewService implements IReviewService {
                 .average().orElse(0);
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
-
-        this.iReviewRepository.save(oldReviewAttributes);
-        return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
     }
 }
