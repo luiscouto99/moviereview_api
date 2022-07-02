@@ -6,8 +6,6 @@ import mindswap.academy.moviereview_api.command.user.role.RoleUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.role.IRoleConverter;
 import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
-import mindswap.academy.moviereview_api.exception.RoleAlreadyExistsException;
-import mindswap.academy.moviereview_api.exception.RoleNotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.http.HttpStatus;
