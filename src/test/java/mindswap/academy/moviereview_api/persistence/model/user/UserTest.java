@@ -26,7 +26,6 @@ class UserTest {
 
     @Mock
     IUserRepository userRepository;
-
     IUserService userService;
     IRoleRepository roleRepository;
 

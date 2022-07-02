@@ -28,10 +28,10 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 public class ReviewService implements IReviewService {
 
     private final IReviewRepository iReviewRepository;
-    private final IReviewConverter iReviewConverter;
     private final IRatingRepository iRatingRepository;
     private final IUserRepository iUserRepository;
     private final IMovieRepository iMovieRepository;
+    private final IReviewConverter iReviewConverter;
 
     @Override
     public List<ReviewDto> getAll() {
@@ -88,7 +88,7 @@ public class ReviewService implements IReviewService {
 
         Movie movie = this.iMovieRepository.findById(reviewDto.getMovieId())
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
-        List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
+        List<Review> movieReviews = this.iReviewRepository.searchAllMovieReviewByMovieId(movie.getId());
 
         // calcular a média dos ratings do filme
         Double movieRating = movieReviews.stream()
@@ -131,7 +131,7 @@ public class ReviewService implements IReviewService {
 
         Movie movie = this.iMovieRepository.findById(oldReviewAttributes.getMovieId().getId())
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
-        List<Review> movieReviews = this.iReviewRepository.searchAllMovieId(movie.getId());
+        List<Review> movieReviews = this.iReviewRepository.searchAllMovieReviewByMovieId(movie.getId());
 
         // calcular a média dos ratings do filme
         Double movieRating = movieReviews.stream()

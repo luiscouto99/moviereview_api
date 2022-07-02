@@ -13,7 +13,7 @@ public interface IReviewRepository extends JpaRepository<Review, Long> {
     @Query(value = "SELECT *\n" +
             "FROM review \n" +
             "WHERE review.movie_id_fk = :id ;", nativeQuery = true)
-    List<Review> searchAllMovieId(Long id);
+    List<Review> searchAllMovieReviewByMovieId(Long id);
 
     @Query(value = "SELECT review.*\n" +
             "FROM review \n" +
@@ -27,4 +27,7 @@ public interface IReviewRepository extends JpaRepository<Review, Long> {
             "WHERE (user_id_fk = :userId OR :userId ISNULL)\n" +
             "AND (movie_id_fk = :movieId or :movieId ISNULL);", nativeQuery = true)
     Optional<Review> findIfReviewAlreadyExists(Long userId, Long movieId);
+
+    // testing
+    boolean checkIfReviewAlreadyExists(Long userId, Long movieId);
 }

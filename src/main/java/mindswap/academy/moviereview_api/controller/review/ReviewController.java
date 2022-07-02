@@ -7,6 +7,8 @@ import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
 import mindswap.academy.moviereview_api.service.review.ReviewService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ public class ReviewController {
 
     @GetMapping
     public List<ReviewDto> getAll() {
+        System.out.println("single  review cache");
         return this.reviewService.getAll();
     }
 
