@@ -37,9 +37,7 @@ public class Movie {
     private String runtimeStr;
     @Column
     private String image;
-
     private int totalReviews;
-
     @OneToMany(mappedBy = "movieId",cascade = CascadeType.REMOVE)
     private List<Review> reviewList;
 
