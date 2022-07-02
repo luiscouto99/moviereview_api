@@ -11,7 +11,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateDto {
-
     @Min(0)
     private Long roleId;
 
