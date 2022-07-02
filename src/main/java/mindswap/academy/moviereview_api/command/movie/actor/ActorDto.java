@@ -13,5 +13,4 @@ public class ActorDto {
     private String id;
     private String image;
     private String name;
-    private String asCharacter;
 }

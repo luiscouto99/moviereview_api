@@ -67,6 +67,8 @@ public class ReviewService implements IReviewService {
                 this.iRatingRepository.findById(
                         Math.round(movieRating)).get());
 
+        movie.setTotalReviews(movieReviews.size());
+
         this.iMovieRepository.save(movie);
 
         return this.iReviewConverter.converter(review, ReviewDto.class);

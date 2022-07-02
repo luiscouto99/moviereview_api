@@ -21,7 +21,6 @@ public class Actor {
     private String image;
     @Column(nullable = false, unique = true)
     private String name;
-    private String asCharacter;
     @ManyToMany(mappedBy = "actorList")
     private List<Movie> movieList;
 }
