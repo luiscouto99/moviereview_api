@@ -10,5 +10,4 @@ import lombok.*;
 public class ActorUpdateDto {
     private String image;
     private String name;
-    private String asCharacter;
 }
