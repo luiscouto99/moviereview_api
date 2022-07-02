@@ -22,7 +22,8 @@ public class ReviewDto {
     private Long movieId;
 
     @NotEmpty
-    @Size(min = 15, message = "A review minimun amount of characters is 15!")
+    @Size(min = 15, message = "Minimun amount of characters is 15!")
+    @Size(max = 255, message = "Maximum amount of characters is 255!")
     private String review;
 
     @NotNull

@@ -35,7 +35,6 @@ public class MovieService implements IMovieService {
     private final IWriterRepository writerRepository;
     private final IDirectorRepository directorRepository;
     private final IRatingRepository ratingRepository;
-    private final IReviewRepository reviewRepository;
 
     @Override
     public List<OutMovieDto> getAll() {

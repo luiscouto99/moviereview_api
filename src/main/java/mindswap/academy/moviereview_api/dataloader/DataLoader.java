@@ -89,7 +89,6 @@ public class DataLoader implements ApplicationRunner {
                 .build();
 
         this.USER_REPOSITORY.saveAll(List.of(user1, user2, user3));
-
         List<Director> newDirectorList = new ArrayList<>(Arrays.asList(
                 Director.builder().name("OLA").build(),
                 Director.builder().name("adieus").build(),
@@ -123,11 +122,9 @@ public class DataLoader implements ApplicationRunner {
                         .writerList(newWriterList).build()
         ));
         this.movieRepository.saveAll(newMovieList);
-
-
-//        MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/k_f19x9ubq", MovieList.class);
-//        for (int i = 0; i < 1; i++) {
-//            MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
+//        MovieList movieId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/k_f19x9ubq", MovieList.class);
+//        for (int i = 0; i < 5; i++) {
+//            MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/" + movieId.getItems().get(i).getId(), MovieApiDto.class);
 //            Movie movie = this.movieConverter.converter(movieDto, Movie.class);
 //            List<Director> newDirectorList = new ArrayList<>();
 //            List<Writer> newWriterList = new ArrayList<>();
