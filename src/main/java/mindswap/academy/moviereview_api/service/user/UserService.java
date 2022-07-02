@@ -76,12 +76,12 @@ public class UserService implements IUserService {
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
-
         Role role = this.ROLE_REPOSITORY.findById(userUpdateDto.getRoleId())
                 .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
+
+        userUpdateDto.setRoleId(null);
+        User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
         updatedUser.setRoleId(role);
-        updatedUser.getRoleId().setRoleName(null);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
     }

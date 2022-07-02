@@ -1,5 +1,7 @@
 package mindswap.academy.moviereview_api.converter.user;
 
+import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
+import mindswap.academy.moviereview_api.persistence.model.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
