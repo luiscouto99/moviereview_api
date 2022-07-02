@@ -5,6 +5,7 @@ import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.exception.BadRequestException;
+import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
@@ -59,7 +60,7 @@ public class ReviewService implements IReviewService {
 
         List<Review> reviewList = iReviewRepository.searchBy(ratingId, movieId, userId);
 
-        if(reviewList.isEmpty()) {
+        if (reviewList.isEmpty()) {
             throw new NotFoundException(REVIEW_NOT_FOUND);
         }
 
@@ -69,11 +70,11 @@ public class ReviewService implements IReviewService {
     @Override
     public ReviewDto add(ReviewDto reviewDto) {
         Review review = this.iReviewConverter.converter(reviewDto, Review.class);
-/*
-        if (this.iReviewRepository.findAll().contains(review)) {
-            throw new
-        }*/
 
+        this.iReviewRepository.findIfReviewAlreadyExists(reviewDto.getUserId(), reviewDto.getMovieId())
+                .ifPresent((reviewByUser) -> {
+                    throw new ConflictException(REVIEW_ALREADY_EXISTS);
+                } );
         this.iReviewRepository.save(review);
 
         Movie movie = this.iMovieRepository.findById(reviewDto.getMovieId())

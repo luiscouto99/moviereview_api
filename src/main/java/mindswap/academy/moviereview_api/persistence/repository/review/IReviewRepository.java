@@ -1,15 +1,12 @@
 package mindswap.academy.moviereview_api.persistence.repository.review;
 
-import mindswap.academy.moviereview_api.command.review.ReviewDto;
-import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
-import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
-import mindswap.academy.moviereview_api.persistence.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IReviewRepository extends JpaRepository<Review, Long> {
@@ -24,4 +21,10 @@ public interface IReviewRepository extends JpaRepository<Review, Long> {
             "AND (user_id_fk = :userId OR :userId ISNULL)\n" +
             "AND (movie_id_fk = :movieId or :movieId ISNULL);", nativeQuery = true)
     List<Review> searchBy(Long ratingId, Long movieId, Long userId);
+
+    @Query(value = "SELECT review.*\n" +
+            "FROM review \n" +
+            "WHERE (user_id_fk = :userId OR :userId ISNULL)\n" +
+            "AND (movie_id_fk = :movieId or :movieId ISNULL);", nativeQuery = true)
+    Optional<Review> findIfReviewAlreadyExists(Long userId, Long movieId);
 }
