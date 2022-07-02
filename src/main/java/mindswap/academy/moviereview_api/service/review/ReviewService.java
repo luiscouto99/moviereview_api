@@ -111,6 +111,15 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
+
+        this.iUserRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND)
+                );
+
+        this.iMovieRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND)
+                );
+
         Review oldReviewAttributes = this.iReviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
