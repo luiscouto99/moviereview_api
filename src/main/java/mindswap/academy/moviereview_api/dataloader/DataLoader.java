@@ -117,14 +117,16 @@ public class DataLoader implements ApplicationRunner {
 
         List<Movie> newMovieList = new ArrayList<>(Arrays.asList(
                 Movie.builder().genreList(newGenreList)
+                        .title("aaa")
+                        .year("2222")
                         .actorList(newActorList)
                         .directorList(newDirectorList)
                         .writerList(newWriterList).build()
         ));
         this.movieRepository.saveAll(newMovieList);
-//        MovieList movieId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/k_f19x9ubq", MovieList.class);
-//        for (int i = 0; i < 5; i++) {
-//            MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/" + movieId.getItems().get(i).getId(), MovieApiDto.class);
+//        MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/k_f19x9ubq", MovieList.class);
+//        for (int i = 0; i < 1; i++) {
+//            MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/k_f19x9ubq/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
 //            Movie movie = this.movieConverter.converter(movieDto, Movie.class);
 //            List<Director> newDirectorList = new ArrayList<>();
 //            List<Writer> newWriterList = new ArrayList<>();

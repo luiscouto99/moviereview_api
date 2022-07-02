@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.genre.GenreDto;
 import mindswap.academy.moviereview_api.command.movie.genre.GenreUpdateDto;
 import mindswap.academy.moviereview_api.service.movie.genre.IGenreService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,14 +19,18 @@ public class GenreController {
     public List<GenreDto> getAll() {
         return this.genreService.getAll();
     }
-
-    @PostMapping
-    public void add(@RequestBody GenreDto genreDto) {
-        this.genreService.add(genreDto);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable("id")Long id) {
+        return this.genreService.delete(id);
     }
 
-    @PutMapping("{id}")
-    public GenreDto update(@PathVariable Long id, @RequestBody GenreUpdateDto genreUpdateDto) {
+    @PostMapping
+    public GenreDto add(@Valid @RequestBody GenreDto genreDto) {
+       return this.genreService.add(genreDto);
+    }
+
+    @PutMapping("/{id}")
+    public GenreDto update(@PathVariable Long id,@Valid @RequestBody GenreUpdateDto genreUpdateDto) {
         return this.genreService.update(id,genreUpdateDto);
     }
 }
