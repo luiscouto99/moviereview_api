@@ -1,15 +1,11 @@
-package mindswap.academy.moviereview_api.persistence.model.review;
+package mindswap.academy.moviereview_api.service.review;
 
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
-import mindswap.academy.moviereview_api.command.user.UserDto;
-import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.converter.review.ReviewConverter;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
-import mindswap.academy.moviereview_api.service.review.IReviewService;
-import mindswap.academy.moviereview_api.service.review.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,13 +17,13 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.mockedpojo.ReviewMockedPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static mindswap.academy.moviereview_api.mockedpojo.ReviewMockedPojo.REVIEW_DTO_EXAMPLE;
+import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.USER_EXAMPLE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ReviewTest {
+class ReviewServiceTest {
 
     @Mock
     IReviewRepository iReviewRepository;
