@@ -71,10 +71,19 @@ public class ReviewService implements IReviewService {
     public ReviewDto add(ReviewDto reviewDto) {
         Review review = this.iReviewConverter.converter(reviewDto, Review.class);
 
+        this.iUserRepository.findById(reviewDto.getUserId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND)
+                );
+
+        this.iMovieRepository.findById(reviewDto.getMovieId())
+                .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND)
+                );
+
         this.iReviewRepository.findIfReviewAlreadyExists(reviewDto.getUserId(), reviewDto.getMovieId())
                 .ifPresent((reviewByUser) -> {
                     throw new ConflictException(REVIEW_ALREADY_EXISTS);
                 } );
+
         this.iReviewRepository.save(review);
 
         Movie movie = this.iMovieRepository.findById(reviewDto.getMovieId())
@@ -86,10 +95,8 @@ public class ReviewService implements IReviewService {
                 .average().orElse(0);
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
-
         movie.setTotalReviews(movieReviews.size());
         this.iMovieRepository.save(movie);
-
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
 
