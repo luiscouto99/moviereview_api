@@ -13,6 +13,8 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -32,9 +34,10 @@ public class WriterServiceTest {
     IWriterRepository writerRepository;
     IWriterService writerService;
 
+
     @BeforeEach
     public void setup() {
-        this.writerService = new WriterService(new WriterConverter(new ModelMapper()), writerRepository);
+        this.writerService = new WriterService(new WriterConverter(new ModelMapper()), writerRepository,new SimpleCacheManager());
     }
 
     @Nested

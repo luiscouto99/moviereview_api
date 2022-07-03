@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class ActorDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;

@@ -9,6 +9,7 @@ import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,8 +40,7 @@ public class GenreService implements IGenreService {
     @Override
     public GenreDto add(GenreDto genreDto) {
         Genre genre = this.genreConverter.converter(genreDto, Genre.class);
-        Objects.requireNonNull(this.cacheManager.getCache("genres")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheGenreAndMovie();
         Genre savedGenre = this.genreRepository.save(genre);
         return this.genreConverter.converter(savedGenre, GenreDto.class);
     }
@@ -54,8 +54,7 @@ public class GenreService implements IGenreService {
                 });
         Genre genre = this.genreRepository.findById(id).orElseThrow(() -> new NotFoundException(GENRE_NOT_FOUND));
         this.genreRepository.delete(genre);
-        Objects.requireNonNull(this.cacheManager.getCache("genres")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheGenreAndMovie();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -63,9 +62,15 @@ public class GenreService implements IGenreService {
     @CacheEvict(key = "#id", value = "genre")
     public GenreDto update(Long id, GenreUpdateDto genreUpdateDto) {
         Genre oldGenre = this.genreRepository.findById(id).orElseThrow(() -> new NotFoundException("Genre not found"));
-        Objects.requireNonNull(this.cacheManager.getCache("genres")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheGenreAndMovie();
         Genre updatedGenre = this.genreRepository.save(this.genreConverter.converterUpdate(genreUpdateDto, oldGenre));
         return this.genreConverter.converter(updatedGenre, GenreDto.class);
+    }
+
+    private void clearCacheGenreAndMovie() {
+        Cache cacheGenre = this.cacheManager.getCache("genres");
+        Cache cacheMovie = this.cacheManager.getCache("movies");
+        if(cacheGenre!=null) cacheGenre.clear();
+        if(cacheMovie!=null) cacheMovie.clear();
     }
 }

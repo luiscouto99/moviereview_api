@@ -19,6 +19,8 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -61,7 +63,8 @@ class MovieServiceTest {
                 iActorRepository,
                 iWriterRepository,
                 iDirectorRepository,
-                iRatingRepository
+                iRatingRepository,
+                new SimpleCacheManager()
         );
     }
     @Nested

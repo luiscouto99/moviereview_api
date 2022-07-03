@@ -19,6 +19,7 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.director.ID
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -69,9 +70,14 @@ public class MovieService implements IMovieService {
         checkIfGenreExists(movie);
         movie.setRatingId(this.ratingRepository.findById(5L).get());
 
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearMovieCache();
         Movie savedMovie = this.movieRepository.save(movie);
         return this.movieConverter.converter(savedMovie, OutMovieDto.class);
+    }
+
+    private void clearMovieCache() {
+        Cache movieCache = this.cacheManager.getCache("movies");
+        if(movieCache!=null)movieCache.clear();
     }
 
     private void checkIfGenreExists(Movie movie) {
@@ -106,7 +112,7 @@ public class MovieService implements IMovieService {
     @CacheEvict(key = "#id", value = "movie")
     public ResponseEntity<Object> delete(Long id) {
         Movie movie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearMovieCache();
         this.movieRepository.delete(movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -120,7 +126,7 @@ public class MovieService implements IMovieService {
         if (movieUpdateDto.getWriterList() != null) updateWriterList(movieUpdateDto, oldMovie);
         if (movieUpdateDto.getGenreList() != null) updateGenreList(movieUpdateDto, oldMovie);
         Movie updatedMovie = this.movieConverter.converterUpdate(movieUpdateDto, oldMovie);
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearMovieCache();
         this.movieRepository.save(updatedMovie);
         return this.movieConverter.converter(updatedMovie, OutMovieDto.class);
     }

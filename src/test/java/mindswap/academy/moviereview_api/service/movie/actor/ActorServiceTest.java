@@ -4,6 +4,8 @@ import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
 import mindswap.academy.moviereview_api.converter.movie.actor.ActorConverter;
 import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActorRepository;
+
+import org.hibernate.loader.entity.CacheEntityLoaderHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,9 +14,14 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static mindswap.academy.moviereview_api.persistence.model.movie.MoviePojo.*;
@@ -29,10 +36,9 @@ public class ActorServiceTest {
     @Mock
     IActorRepository actorRepository;
     IActorService actorService;
-
     @BeforeEach
     public void setup() {
-        this.actorService = new ActorService(actorRepository,new ActorConverter(new ModelMapper()));
+        this.actorService = new ActorService(actorRepository,new ActorConverter(new ModelMapper()),new SimpleCacheManager());
     }
 
     @Nested
@@ -78,5 +84,4 @@ public class ActorServiceTest {
             assertThrows(ConflictException.class, action);
         }
     }
-
 }

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -34,11 +36,11 @@ public class DirectorServiceTest {
 
     @BeforeEach
     public void setup() {
-        this.directorService = new DirectorService(directorRepository,new DirectorConverter(new ModelMapper()));
+        this.directorService = new DirectorService(directorRepository,new DirectorConverter(new ModelMapper()),new SimpleCacheManager());
     }
 
     @Nested
-    class getActor {
+    class getDirector {
         @Test
         void test_getAll(){
             when(directorRepository.findAll())

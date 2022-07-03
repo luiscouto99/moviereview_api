@@ -8,6 +8,7 @@ import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
+import org.springframework.cache.Cache;
 import org.springframework.http.HttpStatus;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -38,8 +39,7 @@ public class WriterService implements IWriterService {
     @Override
     public WriterDto add(WriterDto writerDto) {
         Writer writer = this.writerConverter.converter(writerDto, Writer.class);
-        Objects.requireNonNull(this.cacheManager.getCache("writers")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheWriterAndMovie();
         Writer savedWriter = this.writerRepository.save(writer);
         return this.writerConverter.converter(savedWriter, WriterDto.class);
     }
@@ -53,8 +53,7 @@ public class WriterService implements IWriterService {
                 });
         Writer writer = this.writerRepository.findById(id).orElseThrow(() -> new NotFoundException(WRITER_NOT_FOUND));
         this.writerRepository.delete(writer);
-        Objects.requireNonNull(this.cacheManager.getCache("writers")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheWriterAndMovie();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -62,9 +61,15 @@ public class WriterService implements IWriterService {
     @CacheEvict(key = "#id", value = "writer")
     public WriterDto update(Long id, WriterUpdateDto writerUpdateDto) {
         Writer oldWriter = this.writerRepository.findById(id).orElseThrow(() -> new NotFoundException("Writer not found"));
-        Objects.requireNonNull(this.cacheManager.getCache("writers")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheWriterAndMovie();
         Writer updatedWriter = this.writerRepository.save(this.writerConverter.converterUpdate(writerUpdateDto, oldWriter));
         return this.writerConverter.converter(updatedWriter, WriterDto.class);
+    }
+
+    private void clearCacheWriterAndMovie() {
+        Cache  writerCache = this.cacheManager.getCache("writers");
+        Cache  movieCache = this.cacheManager.getCache("movies");
+        if(writerCache!=null)writerCache.clear();
+        if(movieCache!=null)movieCache.clear();
     }
 }

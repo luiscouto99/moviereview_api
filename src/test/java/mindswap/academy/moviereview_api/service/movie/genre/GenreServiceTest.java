@@ -12,6 +12,8 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -34,7 +36,7 @@ public class GenreServiceTest {
 
     @BeforeEach
     public void setup() {
-        this.genreService = new GenreService(new GenreConverter(new ModelMapper()),genreRepository);
+        this.genreService = new GenreService(new GenreConverter(new ModelMapper()),genreRepository,new SimpleCacheManager());
     }
 
     @Nested

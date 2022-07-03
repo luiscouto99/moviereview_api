@@ -9,6 +9,7 @@ import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.repository.movie.director.IDirectorRepository;
+import org.springframework.cache.Cache;
 import org.springframework.http.HttpStatus;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -38,8 +39,7 @@ public class DirectorService implements IDirectorService {
     @Override
     public DirectorDto add(DirectorDto directorDto) {
         Director director = this.directorConverter.converter(directorDto, Director.class);
-        Objects.requireNonNull(this.cacheManager.getCache("directors")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheDirectorAndMovie();
         Director savedDirector = this.directorRepository.save(director);
         return this.directorConverter.converter(savedDirector, DirectorDto.class);
     }
@@ -53,8 +53,7 @@ public class DirectorService implements IDirectorService {
                 });
         Director director = this.directorRepository.findById(id).orElseThrow(() -> new NotFoundException(DIRECTOR_NOT_FOUND));
         this.directorRepository.delete(director);
-        Objects.requireNonNull(this.cacheManager.getCache("directors")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheDirectorAndMovie();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -62,9 +61,15 @@ public class DirectorService implements IDirectorService {
     @CacheEvict(key = "#id", value = "director")
     public DirectorDto update(Long id, DirectorUpdateDto directorUpdateDto) {
         Director oldDirector = this.directorRepository.findById(id).orElseThrow(() -> new NotFoundException("Director not found"));
-        Objects.requireNonNull(this.cacheManager.getCache("directors")).clear();
-        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        clearCacheDirectorAndMovie();
         Director updatedDirector = this.directorRepository.save(this.directorConverter.converterUpdate(directorUpdateDto, oldDirector));
         return this.directorConverter.converter(updatedDirector, DirectorDto.class);
+    }
+
+    private void clearCacheDirectorAndMovie() {
+        Cache directorsCache = this.cacheManager.getCache("directors");
+        Cache moviesCache = this.cacheManager.getCache("movies");
+        if(directorsCache!=null) directorsCache.clear();
+        if(moviesCache!=null) moviesCache.clear();
     }
 }
