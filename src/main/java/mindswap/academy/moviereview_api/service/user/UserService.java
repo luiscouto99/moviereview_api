@@ -123,7 +123,7 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public ResponseEntity<Object> deleteMovie(Long userId, Long movieId) {
+    public ResponseEntity<Object> removeMovieFromFavouriteList(Long userId, Long movieId) {
         checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));

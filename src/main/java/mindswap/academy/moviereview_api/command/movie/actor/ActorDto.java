@@ -13,10 +13,8 @@ import javax.validation.constraints.Size;
 @Setter
 @Builder
 @NoArgsConstructor
-public class ActorDto implements Serializable {
 @AllArgsConstructor
-@EqualsAndHashCode
-public class ActorDto {
+public class ActorDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @NotEmpty
@@ -26,4 +24,3 @@ public class ActorDto {
     @Size(max = 50,message = " max size 50")
     private String name;
 }
-

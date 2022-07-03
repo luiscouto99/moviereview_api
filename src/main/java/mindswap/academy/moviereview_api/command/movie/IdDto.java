@@ -11,5 +11,5 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class IdDto implements Serializable {
-    private String id;
+    private Long id;
 }

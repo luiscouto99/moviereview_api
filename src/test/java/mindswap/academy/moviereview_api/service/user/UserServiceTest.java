@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ class UserServiceTest {
     IRoleRepository iRoleRepository;
     IMovieRepository iMovieRepository;
     CacheManager cacheManager;
+    PasswordEncoder encoder;
 
     @BeforeEach
     public void setup() {
@@ -40,7 +42,8 @@ class UserServiceTest {
                 new UserConverter(new ModelMapper()),
                 iRoleRepository,
                 iMovieRepository,
-                cacheManager
+                cacheManager,
+                encoder
         );
     }
 
