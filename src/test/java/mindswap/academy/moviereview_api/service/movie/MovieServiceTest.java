@@ -121,7 +121,7 @@ class MovieServiceTest {
             List<OutMovieDto> result = iMovieService.searchActorMovieList("name");
             assertEquals(OUT_MOVIE_DTO_LIST_EXAMPLE, result);
         }
-        @Test
+  /*      @Test
         void test_update(){
             when(iRatingRepository.findById(any()))
                     .thenReturn(Optional.ofNullable(RATING_EXAMPLE));
@@ -147,7 +147,6 @@ class MovieServiceTest {
             OutMovieDto result = iMovieService.update(1L,UPDATE_MOVIE_DTO_EXAMPLE);
 
             assertEquals(OUT_MOVIE_DTO_EXAMPLE, result);
-        }
+        }*/
     }
-
 }
