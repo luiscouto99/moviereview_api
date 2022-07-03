@@ -2,12 +2,14 @@ package mindswap.academy.moviereview_api.command.movie;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
-public class IdDto {
+public class IdDto implements Serializable {
     private Long id;
 }

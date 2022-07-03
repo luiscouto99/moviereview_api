@@ -5,14 +5,15 @@ import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
-public class WriterDto {
+@AllArgsConstructor
+public class WriterDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @NotEmpty

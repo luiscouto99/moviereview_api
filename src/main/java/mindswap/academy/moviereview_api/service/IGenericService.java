@@ -1,9 +1,11 @@
 package mindswap.academy.moviereview_api.service;
 
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 public interface IGenericService<OutDto, InDto, UpdateDto>{
     List<OutDto> getAll();
