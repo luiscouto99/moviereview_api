@@ -1,4 +1,4 @@
-package mindswap.academy.moviereview_api.mockedpojo.movie;
+package mindswap.academy.moviereview_api.persistence.model.movie.writer;
 
 
 

@@ -1,7 +1,6 @@
-package mindswap.academy.moviereview_api.mockedpojo.movie;
+package mindswap.academy.moviereview_api.persistence.model.movie.actor;
 
 import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
-import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 
 import java.util.ArrayList;
 import java.util.List;

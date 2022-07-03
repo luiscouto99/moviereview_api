@@ -53,14 +53,16 @@ public class UserService implements IUserService {
     public UserDto add(UserDto userDto) {
         this.ROLE_REPOSITORY.findById(userDto.getRoleId())
                 .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
+
         this.REPOSITORY.findByEmail(userDto.getEmail())
                 .ifPresent(user -> {
                     throw new ConflictException(EMAIL_REGISTERED);
                 });
 
         User user = this.CONVERTER.converter(userDto, User.class);
-        return this.CONVERTER.converter(
-                this.REPOSITORY.save(user), UserDto.class);
+        this.REPOSITORY.save(user);
+
+        return this.CONVERTER.converter(user, UserDto.class);
     }
 
     @Override

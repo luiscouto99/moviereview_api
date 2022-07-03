@@ -14,21 +14,25 @@ import org.modelmapper.ModelMapper;
 
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.user.UserPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.user.role.RolePojo.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+    IUserService iUserService;
     @Mock
     IUserRepository iUserRepository;
-    IUserService iUserService;
     @Mock
     IRoleRepository iRoleRepository;
 
     @BeforeEach
     public void setup() {
-        this.iUserService = new UserService(iUserRepository,
+        this.iUserService = new UserService(
+                iUserRepository,
                 new UserConverter(new ModelMapper()),
                 iRoleRepository
         );
@@ -38,7 +42,7 @@ class UserServiceTest {
     class getUser {
 
         @Test
-        void testGetUserById() {
+        void test_getUserById() {
             when(iUserRepository.findById(1L))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
@@ -49,10 +53,11 @@ class UserServiceTest {
     }
 
     @Test
-    void testAddUser() {
-        when(iRoleRepository.findById(1L))
+    void test_addUser() {
+        when(iRoleRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
-        when(iUserRepository.save(USER_EXAMPLE))
+
+        when(iUserRepository.save(any()))
                 .thenReturn(USER_EXAMPLE);
 
         UserDto result = iUserService.add(USER_DTO_EXAMPLE);

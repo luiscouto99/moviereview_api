@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class RoleUpdateDto {
     @Size(min = 1, max = 20)
     private String roleName;

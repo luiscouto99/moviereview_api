@@ -1,19 +1,18 @@
-package mindswap.academy.moviereview_api.mockedpojo.movie;
+package mindswap.academy.moviereview_api.persistence.model.movie;
 
 import mindswap.academy.moviereview_api.command.movie.IdDto;
 import mindswap.academy.moviereview_api.command.movie.MovieDto;
 import mindswap.academy.moviereview_api.command.movie.OutMovieDto;
-import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static mindswap.academy.moviereview_api.mockedpojo.movie.ActorPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.DirectorPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.GenrePojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.WriterPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.actor.ActorPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.director.DirectorPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.genre.GenrePojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.writer.WriterPojo.*;
 
-public class MockedPojo {
+public class MoviePojo {
     public static final List<IdDto> LIST_EXAMPLE = new ArrayList<>(List.of(
             IdDto.builder()
                     .id(1L)

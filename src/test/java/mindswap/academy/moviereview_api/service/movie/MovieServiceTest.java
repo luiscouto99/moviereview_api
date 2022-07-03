@@ -19,12 +19,12 @@ import org.modelmapper.ModelMapper;
 
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.mockedpojo.movie.MockedPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.ActorPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.DirectorPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.GenrePojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.movie.WriterPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.review.RatingPojo.RATING_EXAMPLE;
+import static mindswap.academy.moviereview_api.persistence.model.movie.MoviePojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.actor.ActorPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.director.DirectorPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.genre.GenrePojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.movie.writer.WriterPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.review.rating.RatingPojo.RATING_EXAMPLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 class MovieServiceTest {
 
     IMovieService iMovieService;
-    IMovieConverter iMovieConverter;
     @Mock
     IMovieRepository iMovieRepository;
     @Mock
