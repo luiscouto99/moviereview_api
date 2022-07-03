@@ -37,7 +37,7 @@ public class UserService implements IUserService {
     private final CacheManager CACHE_MANAGER;
 
     @Override
-    @Cacheable(value = "users")
+    @Cacheable("users")
     public List<UserDto> getAll() {
         System.out.println("Without cache");
         return this.CONVERTER.converterList(
@@ -54,7 +54,9 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Cacheable("users")
     public List<UserDto> search(Long roleId, String firstName, String lastName, String email) {
+        System.out.println("Without cache");
         if (roleId == null && firstName.equals("") && lastName.equals("") && email.equals(""))
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
 
@@ -63,6 +65,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Cacheable("users")
     public List<MovieDto> getFavouriteList(Long userId) {
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -126,6 +129,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "user")
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -140,7 +144,14 @@ public class UserService implements IUserService {
         User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
         updatedUser.setRoleId(role);
 
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
+    }
+
+    @Override
+    public void clearCache() {
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        System.out.println("Cache cleared");
     }
 }

@@ -77,4 +77,9 @@ public class UserController {
                               @Valid @RequestBody UserUpdateDto userUpdateDto) {
         return this.USER_SERVICE.update(id, userUpdateDto);
     }
+
+    @DeleteMapping("/clearcache")
+    public void clearCache() {
+        this.USER_SERVICE.clearCache();
+    }
 }
