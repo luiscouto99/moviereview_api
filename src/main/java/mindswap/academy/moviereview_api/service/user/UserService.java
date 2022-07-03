@@ -12,13 +12,16 @@ import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
@@ -31,8 +34,10 @@ public class UserService implements IUserService {
     private final IUserConverter CONVERTER;
     private final IRoleRepository ROLE_REPOSITORY;
     private final IMovieRepository MOVIE_REPOSITORY;
+    private final CacheManager CACHE_MANAGER;
 
     @Override
+    @Cacheable(value = "users")
     public List<UserDto> getAll() {
         System.out.println("Without cache");
         return this.CONVERTER.converterList(
@@ -40,7 +45,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @Cacheable(key = "#id", value = "User")
+    @Cacheable(key = "#id", value = "user")
     public UserDto getUser(Long id) {
         System.out.println("Without cache");
         User user = this.REPOSITORY.findById(id)
@@ -94,10 +99,13 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "user")
     public ResponseEntity<Object> delete(Long id) {
         Optional<User> user = this.REPOSITORY.findById(id);
         if (user.isEmpty())
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
         this.REPOSITORY.deleteById(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }

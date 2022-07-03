@@ -40,7 +40,7 @@ public class UserDto implements Serializable {
     private LocalDate dateOfBirth;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDate dateOfAccountCreation = LocalDate.now();
+    private LocalDate dateOfAccountCreation  = LocalDate.now();
 
     @NotEmpty
     @Size(min = 8, max = 30)
