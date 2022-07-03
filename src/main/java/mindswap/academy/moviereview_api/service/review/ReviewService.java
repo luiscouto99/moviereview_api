@@ -17,6 +17,7 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepos
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -106,7 +107,7 @@ public class ReviewService implements IReviewService {
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
         movie.setTotalReviews(movieReviews.size());
 
-        Objects.requireNonNull(this.cacheManager.getCache("reviews")).clear();
+        clearReviewCache();
         this.iMovieRepository.save(movie);
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
@@ -116,7 +117,7 @@ public class ReviewService implements IReviewService {
         Review review = this.iReviewRepository.findById(reviewDeleteDto.getId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
-        Objects.requireNonNull(this.cacheManager.getCache("reviews")).clear();
+        clearReviewCache();
         this.iReviewRepository.delete(review);
         return ResponseEntity.status(HttpStatus.OK).body("Review deleted");
     }
@@ -140,9 +141,14 @@ public class ReviewService implements IReviewService {
         updatingReview(reviewUpdateDto, oldReviewAttributes, rating);
         updateMovieRating(oldReviewAttributes);
 
-        Objects.requireNonNull(this.cacheManager.getCache("reviews")).clear();
+        clearReviewCache();
         this.iReviewRepository.save(oldReviewAttributes);
         return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
+    }
+
+    private void clearReviewCache() {
+        Cache reviewCache = this.cacheManager.getCache("reviews");
+        if(reviewCache!=null)reviewCache.clear();
     }
 
     private void updatingReview(ReviewUpdateDto reviewUpdateDto, Review oldReviewAttributes, Rating rating) {

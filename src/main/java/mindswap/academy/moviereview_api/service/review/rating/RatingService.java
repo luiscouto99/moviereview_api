@@ -9,6 +9,7 @@ import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,8 +28,6 @@ public class RatingService implements IRatingService {
 
     private final IRatingRepository iRatingRepository;
     private final IRatingConverter iRatingConverter;
-    private final IMovieRepository iMovieRepository;
-    private final IReviewRepository iReviewRepository;
     private final CacheManager cacheManager;
 
     @Override
@@ -46,7 +45,7 @@ public class RatingService implements IRatingService {
     @Override
     public RatingDto add(RatingDto ratingDto) {
         Rating rating = this.iRatingConverter.converter(ratingDto, Rating.class);
-        Objects.requireNonNull(this.cacheManager.getCache("ratings")).clear();
+        clearRatingCache();;
         this.iRatingRepository.save(rating);
         return this.iRatingConverter.converter(rating, RatingDto.class);
     }
@@ -56,7 +55,7 @@ public class RatingService implements IRatingService {
     public ResponseEntity<Object> delete(Long id) {
         Rating rating = this.iRatingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(RATING_NOT_FOUND));
-        Objects.requireNonNull(this.cacheManager.getCache("ratings")).clear();
+        clearRatingCache();;
         this.iRatingRepository.delete(rating);
         return ResponseEntity.status(HttpStatus.OK).body("Rating deleted");
     }
@@ -68,8 +67,13 @@ public class RatingService implements IRatingService {
                 .orElseThrow(() -> new NotFoundException(RATING_NOT_FOUND));
         Rating newRatingAttributes = this.iRatingConverter.converterUpdate(ratingUpdateDto, oldRatingAttributes);
 
-        Objects.requireNonNull(this.cacheManager.getCache("ratings")).clear();
+        clearRatingCache();
         this.iRatingRepository.save(newRatingAttributes);
         return this.iRatingConverter.converter(newRatingAttributes, RatingDto.class);
+    }
+
+    private void clearRatingCache() {
+        Cache ratingCache = this.cacheManager.getCache("ratings");
+        if(ratingCache!=null)ratingCache.clear();
     }
 }

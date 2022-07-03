@@ -14,6 +14,7 @@ import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -86,7 +87,7 @@ public class UserService implements IUserService, UserDetailsService {
                     throw new ConflictException(EMAIL_REGISTERED);
                 });
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        clearUserCache();
         User user = this.CONVERTER.converter(userDto, User.class);
         user.setPassword(ENCONDER.encode(user.getPassword()));
         this.USER_REPOSITORY.save(user);
@@ -104,7 +105,7 @@ public class UserService implements IUserService, UserDetailsService {
         if (user.getMovieList().contains(movie))
             return new ResponseEntity<>("Movie is already on the favourite list", HttpStatus.CONFLICT);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        clearUserCache();
         user.addMovie(movie);
         this.USER_REPOSITORY.save(user);
         return new ResponseEntity<>("Movie added to the favourite list", HttpStatus.OK);
@@ -118,7 +119,7 @@ public class UserService implements IUserService, UserDetailsService {
         if (user.isEmpty())
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        clearUserCache();
         this.USER_REPOSITORY.deleteById(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
@@ -134,7 +135,7 @@ public class UserService implements IUserService, UserDetailsService {
         if (!user.getMovieList().contains(movie))
             return new ResponseEntity<>("Movie is not on the favourite list", HttpStatus.NOT_FOUND);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        clearUserCache();
         user.removeMovie(movie);
         this.USER_REPOSITORY.save(user);
         return new ResponseEntity<>("Movie removed from the favourite list", HttpStatus.OK);
@@ -159,7 +160,7 @@ public class UserService implements IUserService, UserDetailsService {
         User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
         updatedUser.setRoleId(role);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        clearUserCache();
         return this.CONVERTER.converter(
                 this.USER_REPOSITORY.save(updatedUser), UserDto.class);
     }
@@ -175,5 +176,10 @@ public class UserService implements IUserService, UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = this.USER_REPOSITORY.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return UserAuthDto.builder().user(user).build();
+    }
+
+    private void clearUserCache() {
+        Cache userCache = this.CACHE_MANAGER.getCache("users");
+        if(userCache!=null)userCache.clear();
     }
 }

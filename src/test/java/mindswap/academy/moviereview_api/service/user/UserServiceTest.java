@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -46,7 +47,7 @@ class UserServiceTest {
                 new UserConverter(new ModelMapper()),
                 iRoleRepository,
                 iMovieRepository,
-                cacheManager,
+                new SimpleCacheManager(),
                 encoder,
                 checkAuth
         );
@@ -64,18 +65,18 @@ class UserServiceTest {
 
             assertEquals(USER_DTO_EXAMPLE, result);
         }
-    }
 
-    @Test
-    void test_addUser() {
-        when(iRoleRepository.findById(any()))
-                .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
-        when(encoder.encode(any()))
-                .thenReturn("123456789");
-        when(iUserRepository.save(any()))
-                .thenReturn(USER_EXAMPLE);
+        @Test
+        void test_addUser() {
+            when(iRoleRepository.findById(any()))
+                    .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
+            when(encoder.encode(any()))
+                    .thenReturn("123456789");
+            when(iUserRepository.save(any()))
+                    .thenReturn(USER_EXAMPLE);
 
-        UserDto result = iUserService.add(USER_DTO_EXAMPLE);
-        assertEquals(USER_DTO_EXAMPLE, result);
+            UserDto result = iUserService.add(USER_DTO_EXAMPLE);
+            assertEquals(USER_DTO_EXAMPLE, result);
+        }
     }
 }

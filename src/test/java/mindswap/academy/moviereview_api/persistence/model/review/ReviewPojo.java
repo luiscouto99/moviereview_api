@@ -5,6 +5,7 @@ import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
 import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
+import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class ReviewPojo {
             .id(1L)
             .userId(User.builder().id(1L).build())
             .movieId(Movie.builder().id(1L).build())
+            .ratingId(Rating.builder().id(1L).build())
             .review("something")
             .build();
 
@@ -40,6 +42,7 @@ public class ReviewPojo {
                     .id(1L)
                     .userId(User.builder().id(1L).build())
                     .movieId(Movie.builder().id(1L).build())
+                    .ratingId(Rating.builder().id(1L).build())
                     .review("something")
                     .build()
     ));

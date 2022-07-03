@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,10 +40,8 @@ public class ReviewServiceTest {
     IUserRepository iUserRepository;
     @Mock
     IMovieRepository iMovieRepository;
-    CacheManager cacheManager;
     @Mock
     CheckAuth checkAuth;
-    CacheManager cacheManager;
 
     @BeforeEach
     public void setup() {
@@ -52,7 +51,7 @@ public class ReviewServiceTest {
                 iUserRepository,
                 iMovieRepository,
                 new ReviewConverter(new ModelMapper()),
-                cacheManager,
+                new SimpleCacheManager(),
                 checkAuth
         );
     }

@@ -8,6 +8,7 @@ import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,7 +43,7 @@ public class RoleService implements IRoleService {
                     throw new ConflictException(ROLE_ALREADY_EXISTS);
                 });
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
+        clearRoleCache();
         Role role = this.CONVERTER.converter(roleDto, Role.class);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(role), RoleDto.class);
@@ -54,7 +55,7 @@ public class RoleService implements IRoleService {
         Optional<Role> role = this.REPOSITORY.findById(id);
         if (role.isEmpty()) return new ResponseEntity<>(ROLE_NOT_FOUND, HttpStatus.NOT_FOUND);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
+        clearRoleCache();
         this.REPOSITORY.deleteById(id);
         return new ResponseEntity<>("Role deleted", HttpStatus.OK);
     }
@@ -71,8 +72,13 @@ public class RoleService implements IRoleService {
                 .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
         Role updatedRole = this.CONVERTER.converterUpdate(roleUpdateDto, role);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
+        clearRoleCache();
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedRole), RoleDto.class);
+    }
+
+    private void clearRoleCache() {
+        Cache roleCache = this.CACHE_MANAGER.getCache("roles");
+        if(roleCache!=null)roleCache.clear();
     }
 }
