@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class ReviewServiceTest {
     IUserRepository iUserRepository;
     @Mock
     IMovieRepository iMovieRepository;
+    CacheManager cacheManager;
     @Mock
     CheckAuth checkAuth;
 
@@ -49,6 +51,7 @@ public class ReviewServiceTest {
                 iUserRepository,
                 iMovieRepository,
                 new ReviewConverter(new ModelMapper()),
+                cacheManager,
                 checkAuth
         );
     }
