@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
 import mindswap.academy.moviereview_api.command.movie.actor.ActorUpdateDto;
 import mindswap.academy.moviereview_api.converter.movie.actor.IActorConverter;
+import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
+import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
 import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActorRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +38,13 @@ public class ActorService implements IActorService {
 
     @Override
     public ResponseEntity<Object> delete(Long id) {
-        return null;
+        this.actorRepository.checkIfActorIsBeingUsed(id)
+                .ifPresent((writer) -> {
+                    throw new ConflictException(ACTOR_IS_BEING_USED);
+                });
+       Actor actor = this.actorRepository.findById(id).orElseThrow(() -> new NotFoundException(ACTOR_NOT_FOUND));
+        this.actorRepository.delete(actor);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override

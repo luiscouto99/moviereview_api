@@ -24,6 +24,7 @@ public class OutMovieDto {
     private String year;
     private String releaseDate;
     private String runtimeStr;
+    private String contentRating;
     private List<ActorDto> actorList;
     private List<DirectorDto> directorList;
     private List<WriterDto> writerList;

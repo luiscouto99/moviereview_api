@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterUpdateDto;
 import mindswap.academy.moviereview_api.service.movie.writer.IWriterService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,12 +22,15 @@ public class WriterController {
     }
 
     @PostMapping
-    public void add(@RequestBody WriterDto writerDto) {
-        this.writerService.add(writerDto);
+    public WriterDto add(@Valid @RequestBody WriterDto writerDto) {
+        return this.writerService.add(writerDto);
     }
-
-    @PutMapping("{id}")
-    public WriterDto update(@PathVariable Long id, @RequestBody WriterUpdateDto writerUpdateDto) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable("id")Long id) {
+       return this.writerService.delete(id);
+    }
+    @PutMapping("/{id}")
+    public WriterDto update(@PathVariable Long id,@Valid @RequestBody WriterUpdateDto writerUpdateDto) {
         return this.writerService.update(id,writerUpdateDto);
     }
 }
