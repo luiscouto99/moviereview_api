@@ -43,10 +43,10 @@ class UserServiceTest {
 
         @Test
         void test_getUserById() {
-            when(iUserRepository.findById(1L))
+            when(iUserRepository.findById(any()))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
-            UserDto result = iUserService.getUser(1L);
+            UserDto result = iUserService.getUser(any());
 
             assertEquals(USER_DTO_EXAMPLE, result);
         }

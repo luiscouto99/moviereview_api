@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 import static mindswap.academy.moviereview_api.persistence.model.movie.MoviePojo.*;
@@ -63,16 +64,6 @@ class MovieServiceTest {
     @Nested
     class getMovie {
 
-        /*@Test
-        void test_searchByMovieRating() {
-            when(iMovieRepository.searchByMovieRating(1L))
-                    .thenReturn((List<Movie>) MOVIE_EXAMPLE);
-
-            List<OutMovieDto> result = iMovieService.searchByMovieRating(1L);
-
-            assertEquals((List<OutMovieDto>) OUT_MOVIE_DTO_EXAMPLE, result);
-        }*/
-
         @Test
         void test_addMovie() {
             when(iRatingRepository.findById(any()))
@@ -97,6 +88,16 @@ class MovieServiceTest {
             OutMovieDto result = iMovieService.add(MOVIE_DTO_EXAMPLE);
 
             assertEquals(OUT_MOVIE_DTO_EXAMPLE, result);
+        }
+
+        @Test
+        void test_searchByMovieRating() {
+            when(iMovieRepository.searchByMovieRating(any()))
+                    .thenReturn(MOVIE_LIST_EXAMPLE);
+
+            List<OutMovieDto> result = iMovieService.searchByMovieRating(any());
+
+            assertEquals(OUT_MOVIE_DTO_LIST_EXAMPLE, result);
         }
     }
 
