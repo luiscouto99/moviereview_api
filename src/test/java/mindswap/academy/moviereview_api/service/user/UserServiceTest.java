@@ -2,6 +2,7 @@ package mindswap.academy.moviereview_api.service.user;
 
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.converter.user.UserConverter;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
 
 import java.util.Optional;
 
@@ -28,13 +30,17 @@ class UserServiceTest {
     IUserRepository iUserRepository;
     @Mock
     IRoleRepository iRoleRepository;
+    IMovieRepository iMovieRepository;
+    CacheManager cacheManager;
 
     @BeforeEach
     public void setup() {
         this.iUserService = new UserService(
                 iUserRepository,
                 new UserConverter(new ModelMapper()),
-                iRoleRepository
+                iRoleRepository,
+                iMovieRepository,
+                cacheManager
         );
     }
 
