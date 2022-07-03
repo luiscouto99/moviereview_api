@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.controller.review;
 
 import lombok.RequiredArgsConstructor;
+import mindswap.academy.moviereview_api.command.review.ReviewDeleteDto;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
@@ -42,9 +43,9 @@ public class ReviewController {
         return this.reviewService.add(reviewDto);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
-        return this.reviewService.delete(id);
+    @DeleteMapping()
+    public ResponseEntity<Object> delete(@Valid @RequestBody ReviewDeleteDto reviewDeleteDto) {
+        return this.reviewService.delete(reviewDeleteDto);
     }
 
     @PutMapping("/{id}")

@@ -14,7 +14,10 @@ import javax.validation.constraints.NotNull;
 public class ReviewUpdateDto {
     @NotEmpty
     private String review;
-
     @NotNull
     private Long ratingId;
+    @NotNull
+    private Long userId;
+    @NotNull
+    private Long movieId;
 }

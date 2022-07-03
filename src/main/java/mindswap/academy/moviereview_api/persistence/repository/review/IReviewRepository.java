@@ -27,4 +27,10 @@ public interface IReviewRepository extends JpaRepository<Review, Long> {
             "WHERE (user_id_fk = :userId OR :userId ISNULL)\n" +
             "AND (movie_id_fk = :movieId or :movieId ISNULL);", nativeQuery = true)
     Optional<Review> findIfReviewAlreadyExists(Long userId, Long movieId);
+
+    @Query(value = "SELECT review.*\n" +
+            "FROM review \n" +
+            "WHERE user_id_fk = :userId \n" +
+            "AND id = :reviewId ;", nativeQuery = true)
+    Optional<Review> searchByUserIdAndReviewId(Long userId,Long reviewId);
 }

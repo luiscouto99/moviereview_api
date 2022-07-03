@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.service.review;
 
 import lombok.RequiredArgsConstructor;
+import mindswap.academy.moviereview_api.command.review.ReviewDeleteDto;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
@@ -17,6 +18,7 @@ import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRa
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,8 +71,9 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDto add(ReviewDto reviewDto) {
-        Review review = this.iReviewConverter.converter(reviewDto, Review.class);
+        checkIfUserEqualsIdGiven(reviewDto.getUserId());
 
+        Review review = this.iReviewConverter.converter(reviewDto, Review.class);
         this.iUserRepository.findById(reviewDto.getUserId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND)
                 );
@@ -101,24 +104,27 @@ public class ReviewService implements IReviewService {
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
 
-    @Override
-    public ResponseEntity<Object> delete(Long id) {
-        Review review = this.iReviewRepository.findById(id)
+
+
+    public ResponseEntity<Object> delete(ReviewDeleteDto reviewDeleteDto) {
+        checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
+        Review review = this.iReviewRepository.findById(reviewDeleteDto.getId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
         this.iReviewRepository.delete(review);
         return ResponseEntity.status(HttpStatus.OK).body("Review deleted");
+
     }
 
     @Override
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
-
-        this.iUserRepository.findById(id)
+        checkIfUserEqualsIdGiven(reviewUpdateDto.getUserId());
+        this.iUserRepository.findById(reviewUpdateDto.getUserId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
-        this.iMovieRepository.findById(id)
+        this.iMovieRepository.findById(reviewUpdateDto.getMovieId())
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
 
-        Review oldReviewAttributes = this.iReviewRepository.findById(id)
+        Review oldReviewAttributes = this.iReviewRepository.searchByUserIdAndReviewId(reviewUpdateDto.getUserId(),id)
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
         Rating rating = this.iRatingRepository.findById(reviewUpdateDto.getRatingId())
@@ -146,5 +152,15 @@ public class ReviewService implements IReviewService {
                 .average().orElse(0);
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
+    }
+    private void checkIfUserEqualsIdGiven(Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        if(!this.iUserRepository.findByEmail(email).get().getId().equals(id)){
+            throw new ConflictException("This user id is not yours");
+        }
+    }
+    @Override
+    public ResponseEntity<Object> delete(Long id) {
+        return null;
     }
 }
