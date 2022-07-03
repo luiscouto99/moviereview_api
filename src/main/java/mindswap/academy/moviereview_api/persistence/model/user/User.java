@@ -1,10 +1,13 @@
 package mindswap.academy.moviereview_api.persistence.model.user;
 
 import lombok.*;
+import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
+import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -45,4 +48,20 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "favourite_movie_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private List<Movie> movieList;
+
+    public void addMovie(Movie movie) {
+        this.movieList.add(movie);
+    }
+
+    public void removeMovie(Movie movie) {
+        this.movieList.remove(movie);
+    }
 }

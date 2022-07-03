@@ -7,6 +7,7 @@ import mindswap.academy.moviereview_api.persistence.model.movie.director.Directo
 import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
+import mindswap.academy.moviereview_api.persistence.model.user.User;
 
 import javax.persistence.*;
 import java.util.List;
@@ -80,4 +81,7 @@ public class Movie {
 
     @ManyToOne
     private Rating ratingId;
+
+    @ManyToMany(mappedBy = "movieList")
+    private List<User> userList;
 }
