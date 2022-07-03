@@ -3,6 +3,8 @@ package mindswap.academy.moviereview_api.command.movie.actor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -11,6 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @Builder
 @NoArgsConstructor
+public class ActorDto implements Serializable {
 @AllArgsConstructor
 @EqualsAndHashCode
 public class ActorDto {

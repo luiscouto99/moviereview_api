@@ -16,12 +16,16 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepos
 import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
@@ -34,19 +38,17 @@ public class ReviewService implements IReviewService {
     private final IUserRepository iUserRepository;
     private final IMovieRepository iMovieRepository;
     private final IReviewConverter iReviewConverter;
+    private final CacheManager cacheManager;
 
     @Override
+    @Cacheable("reviews")
     public List<ReviewDto> getAll() {
         List<Review> reviewList = this.iReviewRepository.findAll();
-
-        if (reviewList.isEmpty()) {
-            throw new NotFoundException(REVIEW_NOT_FOUND);
-        }
-
         return this.iReviewConverter.converterList(reviewList, ReviewDto.class);
     }
 
     @Override
+    @Cacheable("reviews")
     public List<ReviewDto> getReviewsFromUser(Long id) {
         User user = this.iUserRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -55,6 +57,7 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
+    @Cacheable("reviews")
     public List<ReviewDto> searchBy(Long ratingId, Long movieId, Long userId) {
         if (ratingId == null && movieId == null && userId == null) {
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
@@ -85,7 +88,7 @@ public class ReviewService implements IReviewService {
         this.iReviewRepository.findIfReviewAlreadyExists(reviewDto.getUserId(), reviewDto.getMovieId())
                 .ifPresent((reviewByUser) -> {
                     throw new ConflictException(REVIEW_ALREADY_EXISTS);
-                } );
+                });
 
         this.iReviewRepository.save(review);
 
@@ -100,22 +103,25 @@ public class ReviewService implements IReviewService {
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
         movie.setTotalReviews(movieReviews.size());
+
+        Objects.requireNonNull(this.cacheManager.getCache("reviews")).clear();
         this.iMovieRepository.save(movie);
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
 
-
-
+    @CacheEvict(key = "#id", value = "review")
     public ResponseEntity<Object> delete(ReviewDeleteDto reviewDeleteDto) {
         checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
         Review review = this.iReviewRepository.findById(reviewDeleteDto.getId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
+
+        Objects.requireNonNull(this.cacheManager.getCache("reviews")).clear();
         this.iReviewRepository.delete(review);
         return ResponseEntity.status(HttpStatus.OK).body("Review deleted");
-
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "review")
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
         checkIfUserEqualsIdGiven(reviewUpdateDto.getUserId());
         this.iUserRepository.findById(reviewUpdateDto.getUserId())
@@ -132,6 +138,8 @@ public class ReviewService implements IReviewService {
 
         updatingReview(reviewUpdateDto, oldReviewAttributes, rating);
         updateMovieRating(oldReviewAttributes);
+
+        Objects.requireNonNull(this.cacheManager.getCache("review")).clear();
         this.iReviewRepository.save(oldReviewAttributes);
         return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
     }
