@@ -14,14 +14,17 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActo
 import mindswap.academy.moviereview_api.persistence.repository.movie.director.IDirectorRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
-import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
@@ -35,11 +38,13 @@ public class MovieService implements IMovieService {
     private final IWriterRepository writerRepository;
     private final IDirectorRepository directorRepository;
     private final IRatingRepository ratingRepository;
+    private final CacheManager cacheManager;
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> getAll() {
         List<Movie> movieList = this.movieRepository.findAll();
-        if(movieList.isEmpty())throw new NotFoundException(MOVIE_NOT_FOUND);
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
         return this.movieConverter.converterList(movieList, OutMovieDto.class);
     }
 
@@ -47,7 +52,7 @@ public class MovieService implements IMovieService {
     public OutMovieDto add(MovieDto movieDto) {
         Movie movie = this.movieConverter.converter(movieDto, Movie.class);
 
-        if(this.movieRepository.count(Example.of(movie)) != 0){
+        if (this.movieRepository.count(Example.of(movie)) != 0) {
             throw new ConflictException(MOVIE_ALREADY_EXISTS);
         }
 
@@ -57,6 +62,7 @@ public class MovieService implements IMovieService {
         checkIfGenreExists(movie);
         movie.setRatingId(this.ratingRepository.findById(5L).get());
 
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         Movie savedMovie = this.movieRepository.save(movie);
         return this.movieConverter.converter(savedMovie, OutMovieDto.class);
     }
@@ -64,53 +70,58 @@ public class MovieService implements IMovieService {
     private void checkIfGenreExists(Movie movie) {
         for (int i = 0; i < movie.getGenreList().size(); i++) {
             this.genreRepository.findById(movie.getGenreList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(GENRE_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(GENRE_NOT_FOUND));
         }
     }
 
     private void checkIfDirectorExists(Movie movie) {
         for (int i = 0; i < movie.getDirectorList().size(); i++) {
             this.directorRepository.findById(movie.getDirectorList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(DIRECTOR_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(DIRECTOR_NOT_FOUND));
         }
     }
 
     private void checkIfWriterExists(Movie movie) {
         for (int i = 0; i < movie.getWriterList().size(); i++) {
             this.writerRepository.findById(movie.getWriterList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(WRITER_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(WRITER_NOT_FOUND));
         }
     }
 
     private void checkIfActorExists(Movie movie) {
         for (int i = 0; i < movie.getActorList().size(); i++) {
             this.actorRepository.findById(movie.getActorList().get(i).getId())
-                    .orElseThrow(() ->  new NotFoundException(ACTOR_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(ACTOR_NOT_FOUND));
         }
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "movie")
     public ResponseEntity<Object> delete(Long id) {
-        Movie movie = this.movieRepository.findById(id).orElseThrow(()->new NotFoundException(MOVIE_NOT_FOUND));
+        Movie movie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         this.movieRepository.delete(movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "movie")
     public OutMovieDto update(Long id, MovieUpdateDto movieUpdateDto) {
-       Movie oldMovie = this.movieRepository.findById(id).orElseThrow(()->new NotFoundException(MOVIE_NOT_FOUND));
-       Movie updatedMovie = this.movieConverter.converterUpdate(movieUpdateDto,oldMovie);
-       this.movieRepository.save(updatedMovie);
-       return this.movieConverter.converter(updatedMovie,OutMovieDto.class);
+        Movie oldMovie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
+        Movie updatedMovie = this.movieConverter.converterUpdate(movieUpdateDto, oldMovie);
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
+        this.movieRepository.save(updatedMovie);
+        return this.movieConverter.converter(updatedMovie, OutMovieDto.class);
     }
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> searchBy(Long id, String title, String year, String genre) {
         if (id == null && title == null && year == null && genre == null) {
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
         }
         List<Movie> movieList = movieRepository.searchBy(id, title, year, genre);
-        if(movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
         return this.movieConverter.converterList(movieList, OutMovieDto.class);
     }
 }

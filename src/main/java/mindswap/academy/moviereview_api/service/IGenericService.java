@@ -12,8 +12,4 @@ public interface IGenericService<OutDto, InDto, UpdateDto>{
     OutDto add(InDto dto);
     ResponseEntity<Object> delete(Long id);
     OutDto update(Long id, UpdateDto updateDto);
-    default void clearCache(CacheManager cacheManager, String name) {
-        Objects.requireNonNull(cacheManager.getCache(name)).clear();
-        System.out.println("Cache cleared");
-    }
 }

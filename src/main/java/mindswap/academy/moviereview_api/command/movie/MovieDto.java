@@ -3,6 +3,7 @@ package mindswap.academy.moviereview_api.command.movie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -10,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieDto {
+public class MovieDto implements Serializable {
     private Long id;
     private String title;
     private String fullTitle;

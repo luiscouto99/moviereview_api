@@ -31,7 +31,6 @@ public class RoleService implements IRoleService {
     @Override
     @Cacheable("roles")
     public List<RoleDto> getAll() {
-        System.out.println("Without cache");
         return this.CONVERTER.converterList(
                 this.REPOSITORY.findAll(), RoleDto.class);
     }
@@ -42,6 +41,8 @@ public class RoleService implements IRoleService {
                 .ifPresent(role -> {
                     throw new ConflictException(ROLE_ALREADY_EXISTS);
                 });
+
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
         Role role = this.CONVERTER.converter(roleDto, Role.class);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(role), RoleDto.class);
@@ -54,7 +55,6 @@ public class RoleService implements IRoleService {
         if (role.isEmpty()) return new ResponseEntity<>(ROLE_NOT_FOUND, HttpStatus.NOT_FOUND);
 
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
-        System.out.println("Cache cleared");
         this.REPOSITORY.deleteById(id);
         return new ResponseEntity<>("Role deleted", HttpStatus.OK);
     }
@@ -72,7 +72,6 @@ public class RoleService implements IRoleService {
         Role updatedRole = this.CONVERTER.converterUpdate(roleUpdateDto, role);
 
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
-        System.out.println("Cache cleared");
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedRole), RoleDto.class);
     }
