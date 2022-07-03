@@ -1,5 +1,6 @@
 package mindswap.academy.moviereview_api.persistence.model.review;
 
+import mindswap.academy.moviereview_api.command.review.ReviewDeleteDto;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
@@ -7,11 +8,16 @@ import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.model.user.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewPojo {
+
+    public static final ResponseEntity RESPONSE_DELETED = new ResponseEntity<>("Review deleted", HttpStatus.OK);
+
     // Models
     public static final Review REVIEW_EXAMPLE = Review.builder()
             .id(1L)
@@ -34,6 +40,10 @@ public class ReviewPojo {
             .movieId(1L)
             .ratingId(1L)
             .review("something")
+            .build();
+
+    public static final ReviewDeleteDto REVIEW_DELETE_DTO_EXAMPLE = ReviewDeleteDto.builder()
+            .userId(1L)
             .build();
 
     // Lists
