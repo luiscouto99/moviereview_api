@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 import static mindswap.academy.moviereview_api.persistence.model.movie.MoviePojo.*;
 import static mindswap.academy.moviereview_api.persistence.model.review.ReviewPojo.*;
@@ -53,6 +54,16 @@ public class ReviewServiceTest {
 
     @Nested
     class getReview {
+
+        @Test
+        void test_getReviewsFromUser() {
+            when(iUserRepository.findById(any()))
+                    .thenReturn(Optional.ofNullable(USER_EXAMPLE));
+
+            List<ReviewDto> result = iReviewService.getReviewsFromUser(any());
+
+            assertEquals(REVIEW_DTO_LIST_EXAMPLE, result);
+        }
 
         @Test
         void test_addReview() {
