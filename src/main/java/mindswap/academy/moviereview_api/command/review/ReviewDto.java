@@ -1,10 +1,9 @@
 package mindswap.academy.moviereview_api.command.review;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @Builder
 @Getter
@@ -12,7 +11,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ReviewDto {
+public class ReviewDto implements Serializable {
     private Long id;
 
     @NotNull(message = "userId can't be empty")

@@ -15,7 +15,6 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepos
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,6 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @Service
 @AllArgsConstructor
-@CacheConfig(cacheNames = {"UserDto"})
 public class UserService implements IUserService, UserDetailsService {
     private final IUserRepository REPOSITORY;
     private final IUserConverter CONVERTER;
@@ -48,7 +46,6 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @Cacheable("users")
     public List<UserDto> getAll() {
-        System.out.println("Without cache");
         return this.CONVERTER.converterList(
                 this.REPOSITORY.findAll(), UserDto.class);
     }
@@ -57,7 +54,6 @@ public class UserService implements IUserService, UserDetailsService {
     @Cacheable(key = "#id", value = "user")
     public UserDto getUser(Long id) {
         checkAuth.checkIfUserEqualsIdGiven(id);
-        System.out.println("Without cache");
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converter(user, UserDto.class);
@@ -66,7 +62,6 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @Cacheable("users")
     public List<UserDto> search(Long roleId, String firstName, String lastName, String email) {
-        System.out.println("Without cache");
         if (roleId == null && firstName.equals("") && lastName.equals("") && email.equals(""))
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
 
@@ -92,6 +87,7 @@ public class UserService implements IUserService, UserDetailsService {
                     throw new ConflictException(EMAIL_REGISTERED);
                 });
 
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
         User user = this.CONVERTER.converter(userDto, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
         this.REPOSITORY.save(user);
@@ -109,6 +105,7 @@ public class UserService implements IUserService, UserDetailsService {
         if (user.getMovieList().contains(movie))
             return new ResponseEntity<>("Movie is already on the favourite list", HttpStatus.CONFLICT);
 
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
         user.addMovie(movie);
         this.REPOSITORY.save(user);
         return new ResponseEntity<>("Movie added to the favourite list", HttpStatus.OK);
@@ -128,7 +125,7 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public ResponseEntity<Object> deleteMovie(Long userId, Long movieId) {
+    public ResponseEntity<Object> removeMovieFromFavouriteList(Long userId, Long movieId) {
         checkAuth.checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -138,6 +135,7 @@ public class UserService implements IUserService, UserDetailsService {
         if (!user.getMovieList().contains(movie))
             return new ResponseEntity<>("Movie is not on the favourite list", HttpStatus.NOT_FOUND);
 
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
         user.removeMovie(movie);
         this.REPOSITORY.save(user);
         return new ResponseEntity<>("Movie removed from the favourite list", HttpStatus.OK);
@@ -175,16 +173,8 @@ public class UserService implements IUserService, UserDetailsService {
 //    }
 
     @Override
-    public void clearCache() {
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
-        System.out.println("Cache cleared");
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = this.REPOSITORY.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return UserAuthDto.builder().user(user).build();
     }
-
-
 }

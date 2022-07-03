@@ -8,12 +8,17 @@ import mindswap.academy.moviereview_api.exception.ConflictException;
 import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.persistence.model.movie.director.Director;
+import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActorRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
@@ -22,8 +27,11 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 public class ActorService implements IActorService {
     private final IActorRepository actorRepository;
     private final IActorConverter actorConverter;
+    private final IMovieRepository movieRepository;
+    private final CacheManager cacheManager;
 
     @Override
+    @Cacheable("actors")
     public List<ActorDto> getAll() {
         List<Actor> actorList = this.actorRepository.findAll();
         return this.actorConverter.converterList(actorList, ActorDto.class);
@@ -32,25 +40,33 @@ public class ActorService implements IActorService {
     @Override
     public ActorDto add(ActorDto actorDto) {
         Actor actor = this.actorConverter.converter(actorDto, Actor.class);
+        Objects.requireNonNull(this.cacheManager.getCache("actors")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         Actor savedActor = this.actorRepository.save(actor);
         return this.actorConverter.converter(savedActor, ActorDto.class);
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "actor")
     public ResponseEntity<Object> delete(Long id) {
         this.actorRepository.checkIfActorIsBeingUsed(id)
                 .ifPresent((writer) -> {
                     throw new ConflictException(ACTOR_IS_BEING_USED);
                 });
        Actor actor = this.actorRepository.findById(id).orElseThrow(() -> new NotFoundException(ACTOR_NOT_FOUND));
+        Objects.requireNonNull(this.cacheManager.getCache("actors")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         this.actorRepository.delete(actor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "actor")
     public ActorDto update(Long id, ActorUpdateDto actor) {
         Actor oldActor = this.actorRepository.findById(id).orElseThrow(() -> new NotFoundException("Actor not found"));
+        Objects.requireNonNull(this.cacheManager.getCache("actors")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         Actor updatedActor = this.actorRepository.save(this.actorConverter.converterUpdate(actor, oldActor));
-        return this.actorConverter.converter(updatedActor,ActorDto.class);
+        return this.actorConverter.converter(updatedActor, ActorDto.class);
     }
 }

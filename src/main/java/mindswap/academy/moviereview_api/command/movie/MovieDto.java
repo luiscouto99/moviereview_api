@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.format.annotation.NumberFormat;
 
+import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -13,10 +14,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
-public class MovieDto {
+public class MovieDto implements Serializable {
     @NotEmpty
     @Size(max = 100,message = "max title size 20 chars")
     private String title;
@@ -46,5 +47,4 @@ public class MovieDto {
     private List<IdDto> writerList;
     @NotNull
     private List<IdDto> genreList;
-
 }

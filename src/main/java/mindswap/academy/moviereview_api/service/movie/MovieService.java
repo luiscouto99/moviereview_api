@@ -19,6 +19,9 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.director.ID
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
@@ -41,8 +45,10 @@ public class MovieService implements IMovieService {
     private final IWriterRepository writerRepository;
     private final IDirectorRepository directorRepository;
     private final IRatingRepository ratingRepository;
+    private final CacheManager cacheManager;
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> getAll() {
         List<Movie> movieList = this.movieRepository.findAll();
         if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
@@ -63,6 +69,7 @@ public class MovieService implements IMovieService {
         checkIfGenreExists(movie);
         movie.setRatingId(this.ratingRepository.findById(5L).get());
 
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         Movie savedMovie = this.movieRepository.save(movie);
         return this.movieConverter.converter(savedMovie, OutMovieDto.class);
     }
@@ -96,13 +103,16 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "movie")
     public ResponseEntity<Object> delete(Long id) {
         Movie movie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         this.movieRepository.delete(movie);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "movie")
     public OutMovieDto update(Long id, MovieUpdateDto movieUpdateDto) {
         Movie oldMovie = this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
         if (movieUpdateDto.getActorList() != null) updateActorList(movieUpdateDto, oldMovie);
@@ -110,6 +120,7 @@ public class MovieService implements IMovieService {
         if (movieUpdateDto.getWriterList() != null) updateWriterList(movieUpdateDto, oldMovie);
         if (movieUpdateDto.getGenreList() != null) updateGenreList(movieUpdateDto, oldMovie);
         Movie updatedMovie = this.movieConverter.converterUpdate(movieUpdateDto, oldMovie);
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         this.movieRepository.save(updatedMovie);
         return this.movieConverter.converter(updatedMovie, OutMovieDto.class);
     }
@@ -171,6 +182,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> searchBy(Long id, String title, String year, String contentRanting) {
         if (title != null && title.isEmpty()) title = null;
         if (year != null && year.isEmpty()) year = null;
@@ -184,6 +196,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> searchActorMovieList(String name) {
         if (name.isEmpty()) throw new BadRequestException(EMPTY_NAME);
         List<Movie> movieList = this.movieRepository.searchHowManyMoviesActorHasByName(name);
@@ -192,6 +205,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> searchByGenre(String genre) {
         List<Movie> movieList = this.movieRepository.searchByGenre(genre);
         if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
@@ -199,9 +213,10 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Cacheable("movies")
     public List<OutMovieDto> searchByMovieRating(Long id) {
         List<Movie> movieList = this.movieRepository.searchByMovieRating(id);
-        if(movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
-        return this.movieConverter.converterList(movieList,OutMovieDto.class);
+        if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
+        return this.movieConverter.converterList(movieList, OutMovieDto.class);
     }
 }

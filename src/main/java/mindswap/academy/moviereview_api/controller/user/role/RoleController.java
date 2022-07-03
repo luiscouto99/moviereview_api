@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.role.RoleDto;
 import mindswap.academy.moviereview_api.command.user.role.RoleUpdateDto;
 import mindswap.academy.moviereview_api.service.user.role.IRoleService;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

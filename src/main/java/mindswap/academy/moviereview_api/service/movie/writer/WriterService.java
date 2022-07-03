@@ -9,10 +9,14 @@ import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.WRITER_IS_BEING_USED;
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.WRITER_NOT_FOUND;
@@ -22,8 +26,10 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.WRITE
 public class WriterService implements IWriterService {
     private final IWriterConverter writerConverter;
     private final IWriterRepository writerRepository;
+    private final CacheManager cacheManager;
 
     @Override
+    @Cacheable("writers")
     public List<WriterDto> getAll() {
         List<Writer> writerList = this.writerRepository.findAll();
         return this.writerConverter.converterList(writerList, WriterDto.class);
@@ -32,11 +38,14 @@ public class WriterService implements IWriterService {
     @Override
     public WriterDto add(WriterDto writerDto) {
         Writer writer = this.writerConverter.converter(writerDto, Writer.class);
+        Objects.requireNonNull(this.cacheManager.getCache("writers")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         Writer savedWriter = this.writerRepository.save(writer);
         return this.writerConverter.converter(savedWriter, WriterDto.class);
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "writer")
     public ResponseEntity<Object> delete(Long id) {
         this.writerRepository.checkIfWriterIsBeingUsed(id)
                 .ifPresent((writer) -> {
@@ -44,12 +53,17 @@ public class WriterService implements IWriterService {
                 });
         Writer writer = this.writerRepository.findById(id).orElseThrow(() -> new NotFoundException(WRITER_NOT_FOUND));
         this.writerRepository.delete(writer);
+        Objects.requireNonNull(this.cacheManager.getCache("writers")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
+    @CacheEvict(key = "#id", value = "writer")
     public WriterDto update(Long id, WriterUpdateDto writerUpdateDto) {
         Writer oldWriter = this.writerRepository.findById(id).orElseThrow(() -> new NotFoundException("Writer not found"));
+        Objects.requireNonNull(this.cacheManager.getCache("writers")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("movies")).clear();
         Writer updatedWriter = this.writerRepository.save(this.writerConverter.converterUpdate(writerUpdateDto, oldWriter));
         return this.writerConverter.converter(updatedWriter, WriterDto.class);
     }

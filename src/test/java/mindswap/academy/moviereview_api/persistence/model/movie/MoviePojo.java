@@ -25,6 +25,7 @@ public class MoviePojo {
                     .build()
     ));
 
+    // Models
     public static final Movie MOVIE_EXAMPLE = Movie.builder()
             .id(1L)
             .title("something")
