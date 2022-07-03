@@ -25,7 +25,7 @@ import static mindswap.academy.moviereview_api.persistence.model.movie.actor.Act
 import static mindswap.academy.moviereview_api.persistence.model.movie.director.DirectorPojo.*;
 import static mindswap.academy.moviereview_api.persistence.model.movie.genre.GenrePojo.*;
 import static mindswap.academy.moviereview_api.persistence.model.movie.writer.WriterPojo.*;
-import static mindswap.academy.moviereview_api.persistence.model.review.rating.RatingPojo.RATING_EXAMPLE;
+import static mindswap.academy.moviereview_api.persistence.model.review.rating.RatingPojo.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
