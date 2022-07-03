@@ -10,6 +10,7 @@ import javax.validation.constraints.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class UserUpdateDto {
     @Min(0)
     private Long roleId;

@@ -8,11 +8,12 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @ToString
-@Builder
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class MovieUpdateDto {
     @Size(max = 100,message = "max title size 20 chars")
     private String title;

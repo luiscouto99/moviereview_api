@@ -8,8 +8,8 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @Builder
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
+@EqualsAndHashCode
 public class WriterUpdateDto {
     @NotEmpty
     private String name;

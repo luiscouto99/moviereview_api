@@ -18,7 +18,6 @@ import mindswap.academy.moviereview_api.persistence.repository.movie.actor.IActo
 import mindswap.academy.moviereview_api.persistence.repository.movie.director.IDirectorRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.genre.IGenreRepository;
 import mindswap.academy.moviereview_api.persistence.repository.movie.writer.IWriterRepository;
-import mindswap.academy.moviereview_api.persistence.repository.review.IReviewRepository;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 

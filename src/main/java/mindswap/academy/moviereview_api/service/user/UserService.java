@@ -92,8 +92,8 @@ public class UserService implements IUserService, UserDetailsService {
 
         User user = this.CONVERTER.converter(userDto, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
-        return this.CONVERTER.converter(
-                this.REPOSITORY.save(user), UserDto.class);
+        this.REPOSITORY.save(user);
+        return this.CONVERTER.converter(user, UserDto.class);
     }
 
     @Override
@@ -161,7 +161,6 @@ public class UserService implements IUserService, UserDetailsService {
         updatedUser.setRoleId(role);
 
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
-
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
     }
