@@ -4,8 +4,6 @@ import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.converter.user.UserConverter;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
-import mindswap.academy.moviereview_api.service.user.IUserService;
-import mindswap.academy.moviereview_api.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,16 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserTest {
+class UserServiceTest {
     @Mock
-    IUserRepository userRepository;
-    IUserService userService;
+    IUserRepository iUserRepository;
+    IUserService iUserService;
     @Mock
-    IRoleRepository roleRepository;
+    IRoleRepository iRoleRepository;
 
     @BeforeEach
     public void setup() {
-        this.userService = new UserService(userRepository, new UserConverter(new ModelMapper()), roleRepository);
+        this.iUserService = new UserService(iUserRepository,
+                new UserConverter(new ModelMapper()),
+                iRoleRepository
+        );
     }
 
     @Nested
@@ -38,10 +39,10 @@ class UserTest {
 
         @Test
         void testGetUserById() {
-            when(userRepository.findById(1L))
+            when(iUserRepository.findById(1L))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
-            UserDto result = userService.getUser(1L);
+            UserDto result = iUserService.getUser(1L);
 
             assertEquals(USER_DTO_EXAMPLE, result);
         }
@@ -49,12 +50,12 @@ class UserTest {
 
     @Test
     void testAddUser() {
-        when(roleRepository.findById(1L))
+        when(iRoleRepository.findById(1L))
                 .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
-        when(userRepository.save(USER_EXAMPLE))
+        when(iUserRepository.save(USER_EXAMPLE))
                 .thenReturn(USER_EXAMPLE);
 
-        UserDto result = userService.add(USER_DTO_EXAMPLE);
+        UserDto result = iUserService.add(USER_DTO_EXAMPLE);
 
         assertEquals(USER_DTO_EXAMPLE, result);
     }

@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class GenreDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;

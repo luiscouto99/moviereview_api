@@ -22,7 +22,6 @@ public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
     @Column
@@ -37,7 +36,9 @@ public class Movie {
     private String runtimeStr;
     @Column
     private String image;
+
     private int totalReviews;
+
     @OneToMany(mappedBy = "movieId",cascade = CascadeType.REMOVE)
     private List<Review> reviewList;
 

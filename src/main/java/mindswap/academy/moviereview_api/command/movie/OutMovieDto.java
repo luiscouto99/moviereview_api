@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class OutMovieDto {
     private Long id;
     private String title;
