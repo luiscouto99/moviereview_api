@@ -5,6 +5,7 @@ import mindswap.academy.moviereview_api.command.movie.MovieDto;
 import mindswap.academy.moviereview_api.command.user.UserAuthDto;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
+import mindswap.academy.moviereview_api.config.CheckAuth;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
 import mindswap.academy.moviereview_api.exception.*;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
@@ -40,6 +41,7 @@ public class UserService implements IUserService, UserDetailsService {
     private final IMovieRepository MOVIE_REPOSITORY;
     private final CacheManager CACHE_MANAGER;
     private final PasswordEncoder encoder;
+    private final CheckAuth checkAuth;
 
     @Override
     @Cacheable("users")
@@ -51,7 +53,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @Cacheable(key = "#id", value = "user")
     public UserDto getUser(Long id) {
-        checkIfUserEqualsIdGiven(id);
+        checkAuth.checkIfUserEqualsIdGiven(id);
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converter(user, UserDto.class);
@@ -70,7 +72,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @Cacheable("users")
     public List<MovieDto> getFavouriteList(Long userId) {
-        checkIfUserEqualsIdGiven(userId);
+        checkAuth.checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converterList(user.getMovieList(), MovieDto.class);
@@ -94,7 +96,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public ResponseEntity<Object> addMovie(Long userId, Long movieId) {
-        checkIfUserEqualsIdGiven(userId);
+        checkAuth.checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         Movie movie = this.MOVIE_REPOSITORY.findById(movieId)
@@ -112,7 +114,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @CacheEvict(key = "#id", value = "user")
     public ResponseEntity<Object> delete(Long id) {
-        checkIfUserEqualsIdGiven(id);
+        checkAuth.checkIfUserEqualsIdGiven(id);
         Optional<User> user = this.REPOSITORY.findById(id);
         if (user.isEmpty())
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -124,7 +126,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public ResponseEntity<Object> removeMovieFromFavouriteList(Long userId, Long movieId) {
-        checkIfUserEqualsIdGiven(userId);
+        checkAuth.checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         Movie movie = this.MOVIE_REPOSITORY.findById(movieId)
@@ -142,7 +144,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @CacheEvict(key = "#id", value = "user")
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
-        checkIfUserEqualsIdGiven(id);
+        checkAuth.checkIfUserEqualsIdGiven(id);
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
@@ -163,12 +165,12 @@ public class UserService implements IUserService, UserDetailsService {
                 this.REPOSITORY.save(updatedUser), UserDto.class);
     }
 
-    private void checkIfUserEqualsIdGiven(Long id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        if(!this.REPOSITORY.findByEmail(email).get().getId().equals(id)){
-            throw new ConflictException("This id is not Yours");
-        }
-    }
+//    private void checkIfUserEqualsIdGiven(Long id) {
+//        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+//        if(!this.REPOSITORY.findByEmail(email).get().getId().equals(id)){
+//            throw new ConflictException("This id is not Yours");
+//        }
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

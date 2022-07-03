@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.review.ReviewDeleteDto;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
+import mindswap.academy.moviereview_api.config.CheckAuth;
 import mindswap.academy.moviereview_api.converter.review.IReviewConverter;
 import mindswap.academy.moviereview_api.exception.BadRequestException;
 import mindswap.academy.moviereview_api.exception.ConflictException;
@@ -39,6 +40,7 @@ public class ReviewService implements IReviewService {
     private final IMovieRepository iMovieRepository;
     private final IReviewConverter iReviewConverter;
     private final CacheManager cacheManager;
+    private final CheckAuth checkAuth;
 
     @Override
     @Cacheable("reviews")
@@ -74,7 +76,7 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDto add(ReviewDto reviewDto) {
-        checkIfUserEqualsIdGiven(reviewDto.getUserId());
+        checkAuth.checkIfUserEqualsIdGiven(reviewDto.getUserId());
 
         Review review = this.iReviewConverter.converter(reviewDto, Review.class);
         this.iUserRepository.findById(reviewDto.getUserId())
@@ -111,7 +113,7 @@ public class ReviewService implements IReviewService {
 
     @CacheEvict(key = "#id", value = "review")
     public ResponseEntity<Object> delete(ReviewDeleteDto reviewDeleteDto) {
-        checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
+        checkAuth.checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
         Review review = this.iReviewRepository.findById(reviewDeleteDto.getId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
@@ -123,7 +125,7 @@ public class ReviewService implements IReviewService {
     @Override
     @CacheEvict(key = "#id", value = "review")
     public ReviewDto update(Long id, ReviewUpdateDto reviewUpdateDto) {
-        checkIfUserEqualsIdGiven(reviewUpdateDto.getUserId());
+        checkAuth.checkIfUserEqualsIdGiven(reviewUpdateDto.getUserId());
         this.iUserRepository.findById(reviewUpdateDto.getUserId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
@@ -160,12 +162,6 @@ public class ReviewService implements IReviewService {
                 .average().orElse(0);
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
-    }
-    private void checkIfUserEqualsIdGiven(Long id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        if(!this.iUserRepository.findByEmail(email).get().getId().equals(id)){
-            throw new ConflictException("This user id is not yours");
-        }
     }
     @Override
     public ResponseEntity<Object> delete(Long id) {

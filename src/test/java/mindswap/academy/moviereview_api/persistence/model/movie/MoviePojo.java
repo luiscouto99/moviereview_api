@@ -2,6 +2,7 @@ package mindswap.academy.moviereview_api.persistence.model.movie;
 
 import mindswap.academy.moviereview_api.command.movie.IdDto;
 import mindswap.academy.moviereview_api.command.movie.MovieDto;
+import mindswap.academy.moviereview_api.command.movie.MovieUpdateDto;
 import mindswap.academy.moviereview_api.command.movie.OutMovieDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
@@ -21,6 +22,7 @@ public class MoviePojo {
                     .build()
     ));
 
+    // Models
     public static final Movie MOVIE_EXAMPLE = Movie.builder()
             .id(1L)
             .title("something")
@@ -120,4 +122,17 @@ public class MoviePojo {
                     .contentRating("something")
                     .build()
     ));
+    public static final MovieUpdateDto UPDATE_MOVIE_DTO_EXAMPLE = MovieUpdateDto.builder()
+            .title("something")
+            .fullTitle("something")
+            .year("something")
+            .releaseDate("something")
+            .runtimeStr("something")
+            .image("something")
+            .actorList(LIST_EXAMPLE)
+            .directorList(LIST_EXAMPLE)
+            .genreList(LIST_EXAMPLE)
+            .writerList(LIST_EXAMPLE)
+            .contentRating("something")
+            .build();
 }

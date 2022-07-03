@@ -14,6 +14,11 @@ public class ReviewPojo {
             .review("something")
             .build();
 
+    public static final ReviewDto REVIEW_DTO_EXAMPLE = ReviewDto.builder()
+            .id(1L)
+            .review("something")
+            .build();
+
     // Lists
     public static final List<Review> REVIEW_LIST_EXAMPLE = new ArrayList<>(List.of(
             Review.builder()

@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.service.user;
 
 import mindswap.academy.moviereview_api.command.user.UserDto;
+import mindswap.academy.moviereview_api.config.CheckAuth;
 import mindswap.academy.moviereview_api.converter.user.UserConverter;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
@@ -33,7 +34,10 @@ class UserServiceTest {
     IRoleRepository iRoleRepository;
     IMovieRepository iMovieRepository;
     CacheManager cacheManager;
+    @Mock
     PasswordEncoder encoder;
+    @Mock
+    CheckAuth checkAuth;
 
     @BeforeEach
     public void setup() {
@@ -43,7 +47,8 @@ class UserServiceTest {
                 iRoleRepository,
                 iMovieRepository,
                 cacheManager,
-                encoder
+                encoder,
+                checkAuth
         );
     }
 
@@ -65,12 +70,12 @@ class UserServiceTest {
     void test_addUser() {
         when(iRoleRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
-
+        when(encoder.encode(any()))
+                .thenReturn("123456789");
         when(iUserRepository.save(any()))
                 .thenReturn(USER_EXAMPLE);
 
         UserDto result = iUserService.add(USER_DTO_EXAMPLE);
-
         assertEquals(USER_DTO_EXAMPLE, result);
     }
 }

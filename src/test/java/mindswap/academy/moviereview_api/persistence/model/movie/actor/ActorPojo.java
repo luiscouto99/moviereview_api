@@ -33,6 +33,7 @@ public class ActorPojo {
             ActorDto.builder()
                     .id(1L)
                     .name("something")
+                    .image("something")
                     .build()
     ));
 }
