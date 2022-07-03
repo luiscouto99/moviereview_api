@@ -5,15 +5,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RoleConverter implements IRoleConverter {
-    private final ModelMapper MODEL_MAPPER;
+    private final ModelMapper modelMapper;
 
     public RoleConverter(ModelMapper modelMapper) {
-        this.MODEL_MAPPER = modelMapper;
-        this.MODEL_MAPPER.getConfiguration().setSkipNullEnabled(true);
+        this.modelMapper = modelMapper;
+        this.modelMapper.getConfiguration().setSkipNullEnabled(true);
     }
 
     @Override
     public ModelMapper getMapper() {
-        return this.MODEL_MAPPER;
+        return this.modelMapper;
     }
 }

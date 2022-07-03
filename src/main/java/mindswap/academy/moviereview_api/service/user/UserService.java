@@ -27,7 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
@@ -35,28 +34,28 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 @Service
 @AllArgsConstructor
 public class UserService implements IUserService, UserDetailsService {
-    private final IUserRepository USER_REPOSITORY;
-    private final IUserConverter CONVERTER;
-    private final IRoleRepository ROLE_REPOSITORY;
-    private final IMovieRepository MOVIE_REPOSITORY;
-    private final CacheManager CACHE_MANAGER;
-    private final PasswordEncoder ENCONDER;
-    private final CheckAuth CHECK_AUTH;
+    private final IUserRepository userRepository;
+    private final IUserConverter userConverter;
+    private final IRoleRepository roleRepository;
+    private final IMovieRepository movieRepository;
+    private final CacheManager cacheManager;
+    private final PasswordEncoder encoder;
+    private final CheckAuth checkAuth;
 
     @Override
     @Cacheable("users")
     public List<UserDto> getAll() {
-        return this.CONVERTER.converterList(
-                this.USER_REPOSITORY.findAll(), UserDto.class);
+        return this.userConverter.converterList(
+                this.userRepository.findAll(), UserDto.class);
     }
 
     @Override
     @Cacheable(key = "#id", value = "user")
     public UserDto getUser(Long id) {
-        CHECK_AUTH.checkIfUserEqualsIdGiven(id);
-        User user = this.USER_REPOSITORY.findById(id)
+        checkAuth.checkIfUserEqualsIdGiven(id);
+        User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        return this.CONVERTER.converter(user, UserDto.class);
+        return this.userConverter.converter(user, UserDto.class);
     }
 
     @Override
@@ -65,41 +64,41 @@ public class UserService implements IUserService, UserDetailsService {
         if (roleId == null && firstName.equals("") && lastName.equals("") && email.equals(""))
             throw new BadRequestException(AT_LEAST_1_PARAMETER);
 
-        return this.CONVERTER.converterList(
-                this.USER_REPOSITORY.search(roleId, firstName, lastName, email), UserDto.class);
+        return this.userConverter.converterList(
+                this.userRepository.search(roleId, firstName, lastName, email), UserDto.class);
     }
 
     @Override
     @Cacheable("users")
     public List<MovieDto> getFavouriteList(Long userId) {
-        CHECK_AUTH.checkIfUserEqualsIdGiven(userId);
-        User user = this.USER_REPOSITORY.findById(userId)
+        checkAuth.checkIfUserEqualsIdGiven(userId);
+        User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        return this.CONVERTER.converterList(user.getMovieList(), MovieDto.class);
+        return this.userConverter.converterList(user.getMovieList(), MovieDto.class);
     }
 
     @Override
     public UserDto add(UserDto userDto) {
-        this.ROLE_REPOSITORY.findById(userDto.getRoleId())
+        this.roleRepository.findById(userDto.getRoleId())
                 .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
-        this.USER_REPOSITORY.findByEmail(userDto.getEmail())
+        this.userRepository.findByEmail(userDto.getEmail())
                 .ifPresent(user -> {
                     throw new ConflictException(EMAIL_REGISTERED);
                 });
 
         clearUserCache();
-        User user = this.CONVERTER.converter(userDto, User.class);
-        user.setPassword(ENCONDER.encode(user.getPassword()));
-        this.USER_REPOSITORY.save(user);
-        return this.CONVERTER.converter(user, UserDto.class);
+        User user = this.userConverter.converter(userDto, User.class);
+        user.setPassword(encoder.encode(user.getPassword()));
+        this.userRepository.save(user);
+        return this.userConverter.converter(user, UserDto.class);
     }
 
     @Override
     public ResponseEntity<Object> addMovie(Long userId, Long movieId) {
-        CHECK_AUTH.checkIfUserEqualsIdGiven(userId);
-        User user = this.USER_REPOSITORY.findById(userId)
+        checkAuth.checkIfUserEqualsIdGiven(userId);
+        User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        Movie movie = this.MOVIE_REPOSITORY.findById(movieId)
+        Movie movie = this.movieRepository.findById(movieId)
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
 
         if (user.getMovieList().contains(movie))
@@ -107,29 +106,29 @@ public class UserService implements IUserService, UserDetailsService {
 
         clearUserCache();
         user.addMovie(movie);
-        this.USER_REPOSITORY.save(user);
+        this.userRepository.save(user);
         return new ResponseEntity<>("Movie added to the favourite list", HttpStatus.OK);
     }
 
     @Override
     @CacheEvict(key = "#id", value = "user")
     public ResponseEntity<Object> delete(Long id) {
-        CHECK_AUTH.checkIfUserEqualsIdGiven(id);
-        Optional<User> user = this.USER_REPOSITORY.findById(id);
+        checkAuth.checkIfUserEqualsIdGiven(id);
+        Optional<User> user = this.userRepository.findById(id);
         if (user.isEmpty())
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
         clearUserCache();
-        this.USER_REPOSITORY.deleteById(id);
+        this.userRepository.deleteById(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Object> removeMovieFromFavouriteList(Long userId, Long movieId) {
-        CHECK_AUTH.checkIfUserEqualsIdGiven(userId);
-        User user = this.USER_REPOSITORY.findById(userId)
+        checkAuth.checkIfUserEqualsIdGiven(userId);
+        User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        Movie movie = this.MOVIE_REPOSITORY.findById(movieId)
+        Movie movie = this.movieRepository.findById(movieId)
                 .orElseThrow(() -> new NotFoundException(MOVIE_NOT_FOUND));
 
         if (!user.getMovieList().contains(movie))
@@ -137,32 +136,32 @@ public class UserService implements IUserService, UserDetailsService {
 
         clearUserCache();
         user.removeMovie(movie);
-        this.USER_REPOSITORY.save(user);
+        this.userRepository.save(user);
         return new ResponseEntity<>("Movie removed from the favourite list", HttpStatus.OK);
     }
 
     @Override
     @CacheEvict(key = "#id", value = "user")
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
-        CHECK_AUTH.checkIfUserEqualsIdGiven(id);
-        User user = this.USER_REPOSITORY.findById(id)
+        checkAuth.checkIfUserEqualsIdGiven(id);
+        User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         Role role = user.getRoleId();
 
         if (userUpdateDto.getRoleId() != null)
-            role = this.ROLE_REPOSITORY.findById(userUpdateDto.getRoleId())
+            role = this.roleRepository.findById(userUpdateDto.getRoleId())
                     .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
         if (userUpdateDto.getPassword() != null) {
-            userUpdateDto.setPassword(ENCONDER.encode(userUpdateDto.getPassword()));
+            userUpdateDto.setPassword(encoder.encode(userUpdateDto.getPassword()));
         }
         userUpdateDto.setRoleId(null);
-        User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
+        User updatedUser = this.userConverter.converterUpdate(userUpdateDto, user);
         updatedUser.setRoleId(role);
 
         clearUserCache();
-        return this.CONVERTER.converter(
-                this.USER_REPOSITORY.save(updatedUser), UserDto.class);
+        return this.userConverter.converter(
+                this.userRepository.save(updatedUser), UserDto.class);
     }
 
 //    private void checkIfUserEqualsIdGiven(Long id) {
@@ -174,12 +173,12 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = this.USER_REPOSITORY.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return UserAuthDto.builder().user(user).build();
     }
 
     private void clearUserCache() {
-        Cache userCache = this.CACHE_MANAGER.getCache("users");
+        Cache userCache = this.cacheManager.getCache("users");
         if(userCache!=null)userCache.clear();
     }
 }

@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
@@ -25,60 +24,60 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 @Service
 @AllArgsConstructor
 public class RoleService implements IRoleService {
-    private final IRoleRepository REPOSITORY;
-    private final IRoleConverter CONVERTER;
-    private final CacheManager CACHE_MANAGER;
+    private final IRoleRepository roleRepository;
+    private final IRoleConverter roleConverter;
+    private final CacheManager cacheManager;
 
     @Override
     @Cacheable("roles")
     public List<RoleDto> getAll() {
-        return this.CONVERTER.converterList(
-                this.REPOSITORY.findAll(), RoleDto.class);
+        return this.roleConverter.converterList(
+                this.roleRepository.findAll(), RoleDto.class);
     }
 
     @Override
     public RoleDto add(RoleDto roleDto) {
-        this.REPOSITORY.findByroleName(roleDto.getRoleName())
+        this.roleRepository.findByroleName(roleDto.getRoleName())
                 .ifPresent(role -> {
                     throw new ConflictException(ROLE_ALREADY_EXISTS);
                 });
 
         clearRoleCache();
-        Role role = this.CONVERTER.converter(roleDto, Role.class);
-        return this.CONVERTER.converter(
-                this.REPOSITORY.save(role), RoleDto.class);
+        Role role = this.roleConverter.converter(roleDto, Role.class);
+        return this.roleConverter.converter(
+                this.roleRepository.save(role), RoleDto.class);
     }
 
     @Override
     @CacheEvict(key = "#id", value = "role")
     public ResponseEntity<Object> delete(Long id) {
-        Optional<Role> role = this.REPOSITORY.findById(id);
+        Optional<Role> role = this.roleRepository.findById(id);
         if (role.isEmpty()) return new ResponseEntity<>(ROLE_NOT_FOUND, HttpStatus.NOT_FOUND);
 
         clearRoleCache();
-        this.REPOSITORY.deleteById(id);
+        this.roleRepository.deleteById(id);
         return new ResponseEntity<>("Role deleted", HttpStatus.OK);
     }
 
     @Override
     @CacheEvict(key = "#id", value = "role")
     public RoleDto update(Long id, RoleUpdateDto roleUpdateDto) {
-        this.REPOSITORY.findByroleName(roleUpdateDto.getRoleName())
+        this.roleRepository.findByroleName(roleUpdateDto.getRoleName())
                 .ifPresent(role -> {
                     throw new ConflictException(ROLE_ALREADY_EXISTS);
                 });
 
-        Role role = this.REPOSITORY.findById(id)
+        Role role = this.roleRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
-        Role updatedRole = this.CONVERTER.converterUpdate(roleUpdateDto, role);
+        Role updatedRole = this.roleConverter.converterUpdate(roleUpdateDto, role);
 
         clearRoleCache();
-        return this.CONVERTER.converter(
-                this.REPOSITORY.save(updatedRole), RoleDto.class);
+        return this.roleConverter.converter(
+                this.roleRepository.save(updatedRole), RoleDto.class);
     }
 
     private void clearRoleCache() {
-        Cache roleCache = this.CACHE_MANAGER.getCache("roles");
+        Cache roleCache = this.cacheManager.getCache("roles");
         if(roleCache!=null)roleCache.clear();
     }
 }

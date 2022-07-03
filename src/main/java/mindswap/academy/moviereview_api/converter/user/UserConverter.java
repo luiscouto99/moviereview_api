@@ -1,21 +1,19 @@
 package mindswap.academy.moviereview_api.converter.user;
 
-import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
-import mindswap.academy.moviereview_api.persistence.model.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserConverter implements IUserConverter {
-    private final ModelMapper MODEL_MAPPER;
+    private final ModelMapper modelMapper;
 
     public UserConverter(ModelMapper modelMapper) {
-        this.MODEL_MAPPER = modelMapper;
-        this.MODEL_MAPPER.getConfiguration().setSkipNullEnabled(true);
+        this.modelMapper = modelMapper;
+        this.modelMapper.getConfiguration().setSkipNullEnabled(true);
     }
 
     @Override
     public ModelMapper getMapper() {
-        return this.MODEL_MAPPER;
+        return this.modelMapper;
     }
 }

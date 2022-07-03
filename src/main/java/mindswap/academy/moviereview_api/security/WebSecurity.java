@@ -46,6 +46,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/movie/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/movie/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/v1/movie/**").hasRole("ADMIN")
+                //Writer page
+                .antMatchers(HttpMethod.POST, "/api/v1/writer/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/writer/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/writer/**").hasRole("ADMIN")
                 //Actor page
                 .antMatchers(HttpMethod.POST, "/api/v1/actor/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/v1/actor/**").hasRole("ADMIN")
@@ -71,6 +75,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/v1/review/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.PUT, "/api/v1/review/**").hasAnyRole("ADMIN", "USER")
                 //Users page
+                .antMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyRole("ADMIN", "USER")
                 // Generic get call

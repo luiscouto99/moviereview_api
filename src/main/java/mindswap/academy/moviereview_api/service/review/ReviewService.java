@@ -114,7 +114,7 @@ public class ReviewService implements IReviewService {
 
     public ResponseEntity<Object> delete(ReviewDeleteDto reviewDeleteDto) {
         checkAuth.checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
-        Review review = this.iReviewRepository.findById(reviewDeleteDto.getId())
+        Review review = this.iReviewRepository.searchByUserIdAndReviewId(reviewDeleteDto.getUserId(),reviewDeleteDto.getId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
 
         clearReviewCache();
@@ -167,9 +167,5 @@ public class ReviewService implements IReviewService {
                 .average().orElse(0);
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
-    }
-    @Override
-    public ResponseEntity<Object> delete(Long id) {
-        return null;
     }
 }
