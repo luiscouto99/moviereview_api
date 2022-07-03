@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.persistence.model.movie.actor;
 
 import mindswap.academy.moviereview_api.command.movie.actor.ActorDto;
+import mindswap.academy.moviereview_api.command.movie.actor.ActorUpdateDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,12 @@ import java.util.List;
 
 public class ActorPojo {
     // Models
+
+    public static final ActorUpdateDto ACTOR_UPDATE_DTO_EXAMPLE = ActorUpdateDto
+            .builder()
+            .image("something")
+            .name("something")
+            .build();
     public static final Actor ACTOR_EXAMPLE = Actor.builder()
             .id(1L)
             .image("something")
@@ -26,6 +33,7 @@ public class ActorPojo {
             Actor.builder()
                     .id(1L)
                     .name("something")
+                    .image("something")
                     .build()
     ));
 

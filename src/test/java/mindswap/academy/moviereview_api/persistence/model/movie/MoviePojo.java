@@ -6,6 +6,8 @@ import mindswap.academy.moviereview_api.command.movie.MovieUpdateDto;
 import mindswap.academy.moviereview_api.command.movie.OutMovieDto;
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import static mindswap.academy.moviereview_api.persistence.model.movie.genre.Gen
 import static mindswap.academy.moviereview_api.persistence.model.movie.writer.WriterPojo.*;
 
 public class MoviePojo {
+    public static final ResponseEntity RESPONSE_OK = new ResponseEntity<>(HttpStatus.OK);
     public static final List<IdDto> LIST_EXAMPLE = new ArrayList<>(List.of(
             IdDto.builder()
                     .id(1L)

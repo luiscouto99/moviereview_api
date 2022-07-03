@@ -3,12 +3,16 @@ package mindswap.academy.moviereview_api.persistence.model.movie.writer;
 
 
 import mindswap.academy.moviereview_api.command.movie.writer.WriterDto;
+import mindswap.academy.moviereview_api.command.movie.writer.WriterUpdateDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.writer.Writer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WriterPojo {
+    public static final WriterUpdateDto WRITER_UPDATE_DTO_EXAMPLE = WriterUpdateDto.builder()
+            .name("something")
+            .build();
     // Models
     public static final Writer WRITER_EXAMPLE = Writer.builder()
             .id(1L)
