@@ -18,9 +18,8 @@ public class UserDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotNull
-    @Min(1)
-    private Long roleId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long roleId = 1L;
 
     @NotEmpty
     @Size(min = 1, max = 20)
@@ -40,7 +39,7 @@ public class UserDto implements Serializable {
     private LocalDate dateOfBirth;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDate dateOfAccountCreation = LocalDate.now();
+    private LocalDate dateOfAccountCreation  = LocalDate.now();
 
     @NotEmpty
     @Size(min = 8, max = 30)

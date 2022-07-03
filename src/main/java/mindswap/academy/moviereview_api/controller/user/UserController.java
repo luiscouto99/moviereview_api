@@ -5,8 +5,6 @@ import mindswap.academy.moviereview_api.command.movie.MovieDto;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.service.user.IUserService;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,17 +18,9 @@ public class UserController {
     private final IUserService USER_SERVICE;
 
     @GetMapping
-//    @Cacheable("user")
     public List<UserDto> getUsers() {
-        System.out.println("Without cache");
         return this.USER_SERVICE.getAll();
     }
-
-//    @GetMapping("/deletecache")
-//    @CacheEvict("user")
-//    public void deleteGetUsersCache() {
-//        System.out.println("Deleted cache");
-//    }
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable("id") Long id) {
@@ -76,5 +66,10 @@ public class UserController {
     public UserDto updateUser(@PathVariable("id") Long id,
                               @Valid @RequestBody UserUpdateDto userUpdateDto) {
         return this.USER_SERVICE.update(id, userUpdateDto);
+    }
+
+    @DeleteMapping("/clearcache")
+    public void clearCache() {
+        this.USER_SERVICE.clearCache();
     }
 }

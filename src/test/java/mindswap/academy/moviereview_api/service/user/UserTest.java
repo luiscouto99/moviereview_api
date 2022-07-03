@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
 
 import java.util.Optional;
 
@@ -29,10 +30,15 @@ class UserTest {
     @Mock
     IRoleRepository roleRepository;
     IMovieRepository movieRepository;
+    CacheManager cacheManager;
 
     @BeforeEach
     public void setup() {
-        this.userService = new UserService(userRepository, new UserConverter(new ModelMapper()), roleRepository, movieRepository);
+        this.userService = new UserService(userRepository,
+                new UserConverter(new ModelMapper()),
+                roleRepository,
+                movieRepository,
+                cacheManager);
     }
 
     @Nested
