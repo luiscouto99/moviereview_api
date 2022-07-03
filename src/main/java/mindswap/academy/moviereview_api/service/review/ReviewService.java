@@ -111,7 +111,6 @@ public class ReviewService implements IReviewService {
         return this.iReviewConverter.converter(review, ReviewDto.class);
     }
 
-    @CacheEvict(key = "#id", value = "review")
     public ResponseEntity<Object> delete(ReviewDeleteDto reviewDeleteDto) {
         checkAuth.checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
         Review review = this.iReviewRepository.findById(reviewDeleteDto.getId())
@@ -141,7 +140,7 @@ public class ReviewService implements IReviewService {
         updatingReview(reviewUpdateDto, oldReviewAttributes, rating);
         updateMovieRating(oldReviewAttributes);
 
-        Objects.requireNonNull(this.cacheManager.getCache("review")).clear();
+        Objects.requireNonNull(this.cacheManager.getCache("reviews")).clear();
         this.iReviewRepository.save(oldReviewAttributes);
         return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
     }

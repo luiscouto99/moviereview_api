@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class UserUpdateDto {
-    @Min(0)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long roleId;
 
     @Size(max = 20)

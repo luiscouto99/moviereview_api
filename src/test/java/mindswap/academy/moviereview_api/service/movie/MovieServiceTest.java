@@ -160,5 +160,4 @@ class MovieServiceTest {
             assertThrows(BadRequestException.class, action);
         }
     }
-
 }

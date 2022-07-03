@@ -42,6 +42,7 @@ public class ReviewServiceTest {
     CacheManager cacheManager;
     @Mock
     CheckAuth checkAuth;
+    CacheManager cacheManager;
 
     @BeforeEach
     public void setup() {
