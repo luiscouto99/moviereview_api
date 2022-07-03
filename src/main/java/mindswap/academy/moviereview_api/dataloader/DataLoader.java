@@ -20,6 +20,7 @@ import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,6 +44,7 @@ public class DataLoader implements ApplicationRunner {
     private final IMovieConverter movieConverter;
     private final RestTemplate restTemplate;
     private final IRatingRepository iRatingRepository;
+    private final PasswordEncoder encoder;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -69,7 +71,7 @@ public class DataLoader implements ApplicationRunner {
                 .lastName("Silva")
                 .email("joao@email.com")
                 .dateOfBirth(LocalDate.parse("1998-08-03"))
-                .password("palavrapass")
+                .password(encoder.encode("palavrapass"))
                 .build();
 
         User user2 = User.builder().roleId(roleList.get(0))
@@ -77,7 +79,7 @@ public class DataLoader implements ApplicationRunner {
                 .lastName("Santos")
                 .email("olga@email.com")
                 .dateOfBirth(LocalDate.parse("1980-09-07"))
-                .password("palavrapass")
+                .password(encoder.encode("palavrapass"))
                 .build();
 
         User user3 = User.builder().roleId(roleList.get(0))
@@ -85,7 +87,7 @@ public class DataLoader implements ApplicationRunner {
                 .lastName("Carmo")
                 .email("ola@email.com")
                 .dateOfBirth(LocalDate.parse("1970-09-07"))
-                .password("palavrapass")
+                .password(encoder.encode("palavrapass"))
                 .build();
 
         this.USER_REPOSITORY.saveAll(List.of(user1, user2, user3));

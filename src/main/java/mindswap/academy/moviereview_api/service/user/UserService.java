@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.service.user;
 
 import lombok.AllArgsConstructor;
+import mindswap.academy.moviereview_api.command.user.UserAuthDto;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
@@ -11,6 +12,9 @@ import mindswap.academy.moviereview_api.persistence.repository.user.IUserReposit
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -22,7 +26,7 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 
 @Service
 @AllArgsConstructor
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
     private final IUserRepository REPOSITORY;
     private final IUserConverter CONVERTER;
     private final IRoleRepository ROLE_REPOSITORY;
@@ -88,5 +92,11 @@ public class UserService implements IUserService {
         updatedUser.setRoleId(role);
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = this.REPOSITORY.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        return UserAuthDto.builder().user(user).build();
     }
 }
