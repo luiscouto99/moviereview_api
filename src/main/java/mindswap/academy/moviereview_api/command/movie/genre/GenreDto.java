@@ -9,8 +9,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 public class GenreDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

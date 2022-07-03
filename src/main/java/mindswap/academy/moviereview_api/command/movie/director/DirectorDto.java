@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
 @Setter
 @Builder
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
+@EqualsAndHashCode
 public class DirectorDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;

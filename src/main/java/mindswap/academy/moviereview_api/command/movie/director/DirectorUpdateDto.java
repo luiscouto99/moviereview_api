@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 @Setter
 @Builder
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
+@EqualsAndHashCode
 public class DirectorUpdateDto {
     @NotEmpty
     @Size(max = 50,message = " max size 50")

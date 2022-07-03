@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 public class ActorDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -23,3 +23,4 @@ public class ActorDto {
     @Size(max = 50,message = " max size 50")
     private String name;
 }
+
