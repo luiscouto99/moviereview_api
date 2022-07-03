@@ -18,9 +18,8 @@ public class UserDto implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotNull
-    @Min(1)
-    private Long roleId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long roleId = 1L;
 
     @NotEmpty
     @Size(min = 1, max = 20)
