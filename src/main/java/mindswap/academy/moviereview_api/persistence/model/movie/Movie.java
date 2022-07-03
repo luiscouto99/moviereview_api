@@ -11,13 +11,13 @@ import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Movie {
 
     @Id
