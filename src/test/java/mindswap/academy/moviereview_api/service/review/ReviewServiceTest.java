@@ -1,6 +1,7 @@
 package mindswap.academy.moviereview_api.service.review;
 
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
+import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.config.CheckAuth;
 import mindswap.academy.moviereview_api.converter.review.ReviewConverter;
 import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
@@ -80,6 +81,25 @@ public class ReviewServiceTest {
                     .thenReturn(REVIEW_EXAMPLE);
 
             ReviewDto result = iReviewService.add(REVIEW_DTO_EXAMPLE);
+
+            assertEquals(REVIEW_DTO_EXAMPLE, result);
+        }
+
+        @Test
+        void test_update() {
+            when(iUserRepository.findById(any()))
+                    .thenReturn(Optional.ofNullable(USER_EXAMPLE));
+
+            when(iMovieRepository.findById(any()))
+                    .thenReturn(Optional.ofNullable(MOVIE_EXAMPLE));
+
+            when(iReviewRepository.searchByUserIdAndReviewId(any(), any()))
+                    .thenReturn(Optional.ofNullable(REVIEW_EXAMPLE));
+
+            when(iRatingRepository.findById(any()))
+                    .thenReturn(Optional.ofNullable(RATING_EXAMPLE));
+
+            ReviewDto result = iReviewService.update(any(), REVIEW_UPDATE_DTO_EXAMPLE);
 
             assertEquals(REVIEW_DTO_EXAMPLE, result);
         }

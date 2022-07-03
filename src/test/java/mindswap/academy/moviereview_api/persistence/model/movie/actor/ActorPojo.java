@@ -26,6 +26,7 @@ public class ActorPojo {
             Actor.builder()
                     .id(1L)
                     .name("something")
+                    .image("something")
                     .build()
     ));
 
