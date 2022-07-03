@@ -1,5 +1,6 @@
 package mindswap.academy.moviereview_api.service.review;
 
+import mindswap.academy.moviereview_api.command.review.ReviewDeleteDto;
 import mindswap.academy.moviereview_api.command.review.ReviewDto;
 import mindswap.academy.moviereview_api.command.review.ReviewUpdateDto;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
@@ -18,4 +19,5 @@ public interface IReviewService{
     List<ReviewDto> getAll();
     ReviewDto add(ReviewDto dto);
     ReviewDto update(Long id, ReviewUpdateDto updateDto);
+    ResponseEntity<Object> delete(ReviewDeleteDto reviewDeleteDto);
 }
