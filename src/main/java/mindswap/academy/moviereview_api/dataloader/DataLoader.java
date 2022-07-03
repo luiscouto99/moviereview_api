@@ -66,7 +66,8 @@ public class DataLoader implements ApplicationRunner {
         ));
         this.ROLE_REPOSITORY.saveAll(roleList);
 
-        User user1 = User.builder().roleId(roleList.get(1))
+        User user1 = User.builder()
+                .roleId(roleList.get(1))
                 .firstName("João")
                 .lastName("Silva")
                 .email("joao@email.com")
@@ -75,7 +76,8 @@ public class DataLoader implements ApplicationRunner {
                 .password(encoder.encode("palavrapass"))
                 .build();
 
-        User user2 = User.builder().roleId(roleList.get(0))
+        User user2 = User.builder()
+                .roleId(roleList.get(1))
                 .firstName("Olga")
                 .lastName("Santos")
                 .email("olga@email.com")
@@ -84,7 +86,8 @@ public class DataLoader implements ApplicationRunner {
                 .password(encoder.encode("palavrapass"))
                 .build();
 
-        User user3 = User.builder().roleId(roleList.get(0))
+        User user3 = User.builder()
+                .roleId(roleList.get(0))
                 .firstName("Olívia")
                 .lastName("Carmo")
                 .email("ola@email.com")
