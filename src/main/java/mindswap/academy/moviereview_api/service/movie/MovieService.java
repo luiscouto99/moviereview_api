@@ -195,7 +195,7 @@ public class MovieService implements IMovieService {
 
     @Override
     public List<OutMovieDto> searchByGenre(String genre) {
-        List<Movie> movieList = movieRepository.searchByGenre(genre);
+        List<Movie> movieList = this.movieRepository.searchByGenre(genre);
         if (movieList.isEmpty()) throw new NotFoundException(MOVIE_NOT_FOUND);
         return this.movieConverter.converterList(movieList, OutMovieDto.class);
     }

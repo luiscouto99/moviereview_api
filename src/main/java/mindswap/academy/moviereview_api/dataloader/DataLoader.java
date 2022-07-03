@@ -59,8 +59,8 @@ public class DataLoader implements ApplicationRunner {
 
         // user
         List<Role> roleList = new ArrayList<>(Arrays.asList(
-                Role.builder().roleName("User").build(),
-                Role.builder().roleName("Admin").build()
+                Role.builder().roleName("USER").build(),
+                Role.builder().roleName("ADMIN").build()
         ));
         this.ROLE_REPOSITORY.saveAll(roleList);
 
