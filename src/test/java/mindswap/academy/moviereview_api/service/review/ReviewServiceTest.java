@@ -17,8 +17,8 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.mockedpojo.ReviewMockedPojo.*;
-import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.review.ReviewPojo.REVIEW_DTO_LIST_EXAMPLE;
+import static mindswap.academy.moviereview_api.persistence.model.user.UserPojo.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -49,13 +49,13 @@ class ReviewServiceTest {
     class getReviewFromUser {
 
         @Test
-        void testGetReviewsFromUser() {
+        void test_getReviewsFromUser() {
             when(iUserRepository.findById(1L))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
             List<ReviewDto> result = iReviewService.getReviewsFromUser(1L);
 
-            assertEquals(List.of(REVIEW_DTO_EXAMPLE), result);
+            assertEquals(REVIEW_DTO_LIST_EXAMPLE, result);
         }
     }
 }

@@ -1,25 +1,17 @@
-package mindswap.academy.moviereview_api.mockedpojo;
+package mindswap.academy.moviereview_api.persistence.model.user;
 
 import mindswap.academy.moviereview_api.command.user.UserDto;
-import mindswap.academy.moviereview_api.persistence.model.user.User;
-import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static mindswap.academy.moviereview_api.mockedpojo.ReviewMockedPojo.REVIEW_EXAMPLE;
+import static mindswap.academy.moviereview_api.persistence.model.review.ReviewPojo.REVIEW_LIST_EXAMPLE;
+import static mindswap.academy.moviereview_api.persistence.model.user.role.RolePojo.ROLE_EXAMPLE;
 
-public class UserMockedPojo {
-
-    public static final Role ROLE_EXAMPLE = Role.builder()
-            .id(1L)
-            .roleName("User")
-            .build();
-
+public class UserPojo {
     public static final User USER_EXAMPLE = User.builder()
             .id(1L)
             .roleId(ROLE_EXAMPLE)
-            .reviewList(List.of(REVIEW_EXAMPLE))
+            .reviewList(REVIEW_LIST_EXAMPLE)
             .firstName("Nuno")
             .lastName("Carmo")
             .email("nuno.carmo@mindswap.academy")

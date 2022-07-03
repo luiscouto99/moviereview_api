@@ -13,6 +13,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleDto implements Serializable {
+@EqualsAndHashCode
+public class RoleDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 

@@ -13,8 +13,9 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class MovieDto {
     @NotEmpty
     @Size(max = 100,message = "max title size 20 chars")

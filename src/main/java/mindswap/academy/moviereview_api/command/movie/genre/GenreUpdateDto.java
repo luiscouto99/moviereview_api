@@ -8,8 +8,9 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class GenreUpdateDto {
     @NotEmpty
     @Size(max = 50,message = " max size 50")

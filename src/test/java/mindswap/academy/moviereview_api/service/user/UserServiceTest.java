@@ -2,11 +2,8 @@ package mindswap.academy.moviereview_api.service.user;
 
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.converter.user.UserConverter;
-import mindswap.academy.moviereview_api.persistence.repository.movie.IMovieRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.IUserRepository;
 import mindswap.academy.moviereview_api.persistence.repository.user.role.IRoleRepository;
-import mindswap.academy.moviereview_api.service.user.IUserService;
-import mindswap.academy.moviereview_api.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,55 +11,56 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.CacheManager;
 
 import java.util.Optional;
 
-import static mindswap.academy.moviereview_api.mockedpojo.UserMockedPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.user.UserPojo.*;
+import static mindswap.academy.moviereview_api.persistence.model.user.role.RolePojo.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserTest {
+class UserServiceTest {
+
+    IUserService iUserService;
     @Mock
-    IUserRepository userRepository;
-    IUserService userService;
+    IUserRepository iUserRepository;
     @Mock
-    IRoleRepository roleRepository;
-    IMovieRepository movieRepository;
-    CacheManager cacheManager;
+    IRoleRepository iRoleRepository;
 
     @BeforeEach
     public void setup() {
-        this.userService = new UserService(userRepository,
+        this.iUserService = new UserService(
+                iUserRepository,
                 new UserConverter(new ModelMapper()),
-                roleRepository,
-                movieRepository,
-                cacheManager);
+                iRoleRepository
+        );
     }
 
     @Nested
     class getUser {
 
         @Test
-        void testGetUserById() {
-            when(userRepository.findById(1L))
+        void test_getUserById() {
+            when(iUserRepository.findById(any()))
                     .thenReturn(Optional.of(USER_EXAMPLE));
 
-            UserDto result = userService.getUser(1L);
+            UserDto result = iUserService.getUser(any());
 
             assertEquals(USER_DTO_EXAMPLE, result);
         }
     }
 
     @Test
-    void testAddUser() {
-        when(roleRepository.findById(1L))
+    void test_addUser() {
+        when(iRoleRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(ROLE_EXAMPLE));
-        when(userRepository.save(USER_EXAMPLE))
+
+        when(iUserRepository.save(any()))
                 .thenReturn(USER_EXAMPLE);
 
-        UserDto result = userService.add(USER_DTO_EXAMPLE);
+        UserDto result = iUserService.add(USER_DTO_EXAMPLE);
 
         assertEquals(USER_DTO_EXAMPLE, result);
     }
