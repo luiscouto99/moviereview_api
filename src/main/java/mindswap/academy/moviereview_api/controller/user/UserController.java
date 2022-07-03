@@ -5,6 +5,7 @@ import mindswap.academy.moviereview_api.command.movie.MovieDto;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.service.user.IUserService;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
     private final IUserService USER_SERVICE;
+    private final CacheManager CACHE_MANAGER;
 
     @GetMapping
     public List<UserDto> getUsers() {
@@ -70,6 +72,6 @@ public class UserController {
 
     @DeleteMapping("/clearcache")
     public void clearCache() {
-        this.USER_SERVICE.clearCache();
+        this.USER_SERVICE.clearCache(this.CACHE_MANAGER, "users");
     }
 }

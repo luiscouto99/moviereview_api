@@ -20,5 +20,4 @@ public interface IUserService extends IGenericService<UserDto, UserDto, UserUpda
     ResponseEntity<Object> deleteMovie(Long userId, Long movieId);
 
     List<MovieDto> getFavouriteList(Long userId);
-    void clearCache();
 }

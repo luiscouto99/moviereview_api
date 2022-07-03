@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.user.role.RoleDto;
 import mindswap.academy.moviereview_api.command.user.role.RoleUpdateDto;
 import mindswap.academy.moviereview_api.service.user.role.IRoleService;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RoleController {
     private final IRoleService ROLE_SERVICE;
+    private final CacheManager CACHE_MANAGER;
 
     @GetMapping
     public List<RoleDto> getRoles() {
@@ -35,5 +37,10 @@ public class RoleController {
     public RoleDto updateRole(@PathVariable("id") Long id,
                               @Valid @RequestBody RoleUpdateDto roleUpdateDto) {
         return this.ROLE_SERVICE.update(id, roleUpdateDto);
+    }
+
+    @DeleteMapping("/clearcache")
+    public void clearCache() {
+        this.ROLE_SERVICE.clearCache(this.CACHE_MANAGER, "roles");
     }
 }

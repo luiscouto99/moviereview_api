@@ -31,6 +31,7 @@ public class RoleService implements IRoleService {
     @Override
     @Cacheable("roles")
     public List<RoleDto> getAll() {
+        System.out.println("Without cache");
         return this.CONVERTER.converterList(
                 this.REPOSITORY.findAll(), RoleDto.class);
     }
@@ -47,18 +48,19 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    @CacheEvict(key = "#roleid", value = "role")
+    @CacheEvict(key = "#id", value = "role")
     public ResponseEntity<Object> delete(Long id) {
         Optional<Role> role = this.REPOSITORY.findById(id);
         if (role.isEmpty()) return new ResponseEntity<>(ROLE_NOT_FOUND, HttpStatus.NOT_FOUND);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
+        System.out.println("Cache cleared");
         this.REPOSITORY.deleteById(id);
         return new ResponseEntity<>("Role deleted", HttpStatus.OK);
     }
 
     @Override
-    @CacheEvict(key = "#roleid", value = "role")
+    @CacheEvict(key = "#id", value = "role")
     public RoleDto update(Long id, RoleUpdateDto roleUpdateDto) {
         this.REPOSITORY.findByroleName(roleUpdateDto.getRoleName())
                 .ifPresent(role -> {
@@ -69,7 +71,8 @@ public class RoleService implements IRoleService {
                 .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
         Role updatedRole = this.CONVERTER.converterUpdate(roleUpdateDto, role);
 
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        Objects.requireNonNull(this.CACHE_MANAGER.getCache("roles")).clear();
+        System.out.println("Cache cleared");
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedRole), RoleDto.class);
     }

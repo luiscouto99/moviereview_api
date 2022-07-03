@@ -67,6 +67,7 @@ public class UserService implements IUserService {
     @Override
     @Cacheable("users")
     public List<MovieDto> getFavouriteList(Long userId) {
+        System.out.println("Without cache");
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converterList(user.getMovieList(), MovieDto.class);
@@ -109,6 +110,7 @@ public class UserService implements IUserService {
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        System.out.println("Cache cleared");
         this.REPOSITORY.deleteById(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
@@ -145,13 +147,8 @@ public class UserService implements IUserService {
         updatedUser.setRoleId(role);
 
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+        System.out.println("Cache cleared");
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
-    }
-
-    @Override
-    public void clearCache() {
-        Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
-        System.out.println("Cache cleared");
     }
 }

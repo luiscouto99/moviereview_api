@@ -2,12 +2,10 @@ package mindswap.academy.moviereview_api.persistence.model.user;
 
 import lombok.*;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
-import mindswap.academy.moviereview_api.persistence.model.movie.genre.Genre;
 import mindswap.academy.moviereview_api.persistence.model.review.Review;
 import mindswap.academy.moviereview_api.persistence.model.user.role.Role;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
