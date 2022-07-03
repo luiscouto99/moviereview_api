@@ -19,9 +19,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class UserService implements IUserService, UserDetailsService {
     private final IRoleRepository ROLE_REPOSITORY;
     private final IMovieRepository MOVIE_REPOSITORY;
     private final CacheManager CACHE_MANAGER;
+    private final PasswordEncoder encoder;
 
     @Override
     @Cacheable("users")
@@ -51,6 +54,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @Cacheable(key = "#id", value = "user")
     public UserDto getUser(Long id) {
+        checkIfUserEqualsIdGiven(id);
         System.out.println("Without cache");
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -71,6 +75,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @Cacheable("users")
     public List<MovieDto> getFavouriteList(Long userId) {
+        checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return this.CONVERTER.converterList(user.getMovieList(), MovieDto.class);
@@ -86,12 +91,14 @@ public class UserService implements IUserService, UserDetailsService {
                 });
 
         User user = this.CONVERTER.converter(userDto, User.class);
+        user.setPassword(encoder.encode(user.getPassword()));
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(user), UserDto.class);
     }
 
     @Override
     public ResponseEntity<Object> addMovie(Long userId, Long movieId) {
+        checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         Movie movie = this.MOVIE_REPOSITORY.findById(movieId)
@@ -108,6 +115,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @CacheEvict(key = "#id", value = "user")
     public ResponseEntity<Object> delete(Long id) {
+        checkIfUserEqualsIdGiven(id);
         Optional<User> user = this.REPOSITORY.findById(id);
         if (user.isEmpty())
             return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -119,6 +127,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public ResponseEntity<Object> deleteMovie(Long userId, Long movieId) {
+        checkIfUserEqualsIdGiven(userId);
         User user = this.REPOSITORY.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         Movie movie = this.MOVIE_REPOSITORY.findById(movieId)
@@ -135,6 +144,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     @CacheEvict(key = "#id", value = "user")
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
+        checkIfUserEqualsIdGiven(id);
         User user = this.REPOSITORY.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
@@ -143,15 +153,26 @@ public class UserService implements IUserService, UserDetailsService {
         if (userUpdateDto.getRoleId() != null)
             role = this.ROLE_REPOSITORY.findById(userUpdateDto.getRoleId())
                     .orElseThrow(() -> new NotFoundException(ROLE_NOT_FOUND));
-
+        if (userUpdateDto.getPassword() != null) {
+            userUpdateDto.setPassword(encoder.encode(userUpdateDto.getPassword()));
+        }
         userUpdateDto.setRoleId(null);
         User updatedUser = this.CONVERTER.converterUpdate(userUpdateDto, user);
         updatedUser.setRoleId(role);
 
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
+
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
     }
+
+    private void checkIfUserEqualsIdGiven(Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        if(!this.REPOSITORY.findByEmail(email).get().getId().equals(id)){
+            throw new ConflictException("This id is not Yours");
+        }
+    }
+
     @Override
     public void clearCache() {
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();

@@ -6,8 +6,11 @@ import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.service.user.IUserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -52,7 +55,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id, HttpServletResponse response, HttpServletRequest request) {
         return this.USER_SERVICE.delete(id);
     }
 
