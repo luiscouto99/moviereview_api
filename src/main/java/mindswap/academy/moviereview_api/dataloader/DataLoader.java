@@ -20,6 +20,7 @@ import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,6 +44,7 @@ public class DataLoader implements ApplicationRunner {
     private final IMovieConverter movieConverter;
     private final RestTemplate restTemplate;
     private final IRatingRepository iRatingRepository;
+    private final PasswordEncoder encoder;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -70,7 +72,7 @@ public class DataLoader implements ApplicationRunner {
                 .email("joao@email.com")
                 .dateOfBirth(LocalDate.parse("1998-08-03"))
                 .dateOfAccountCreation(LocalDate.now())
-                .password("palavrapass")
+                .password(encoder.encode("palavrapass"))
                 .build();
 
         User user2 = User.builder().roleId(roleList.get(0))
@@ -79,7 +81,7 @@ public class DataLoader implements ApplicationRunner {
                 .email("olga@email.com")
                 .dateOfBirth(LocalDate.parse("1980-09-07"))
                 .dateOfAccountCreation(LocalDate.now())
-                .password("palavrapass")
+                .password(encoder.encode("palavrapass"))
                 .build();
 
         User user3 = User.builder().roleId(roleList.get(0))
@@ -88,11 +90,10 @@ public class DataLoader implements ApplicationRunner {
                 .email("ola@email.com")
                 .dateOfBirth(LocalDate.parse("1970-09-07"))
                 .dateOfAccountCreation(LocalDate.now())
-                .password("palavrapass")
+                .password(encoder.encode("palavrapass"))
                 .build();
 
         this.USER_REPOSITORY.saveAll(List.of(user1, user2, user3));
-
         List<Director> newDirectorList = new ArrayList<>(Arrays.asList(
                 Director.builder().name("OLA").build(),
                 Director.builder().name("adieus").build(),
@@ -147,10 +148,9 @@ public class DataLoader implements ApplicationRunner {
 //            this.movieRepository.save(movie);
 //        }
     }
-
     private void addGenre(Movie movie, List<Genre> newGenreList) {
         for (int i1 = 0; i1 < movie.getGenreList().size(); i1++) {
-            if (this.genreRepository.findByValue(movie.getGenreList().get(i1).getValue()).isEmpty()) {
+            if(this.genreRepository.findByValue(movie.getGenreList().get(i1).getValue()).isEmpty()) {
                 this.genreRepository.saveAndFlush(movie.getGenreList().get(i1));
             }
             newGenreList.add(this.genreRepository.findByValue(movie.getGenreList().get(i1).getValue()).get());
@@ -159,7 +159,7 @@ public class DataLoader implements ApplicationRunner {
 
     private void addActors(Movie movie, List<Actor> newActorList) {
         for (int i1 = 0; i1 < movie.getActorList().size(); i1++) {
-            if (this.actorRepository.findByName(movie.getActorList().get(i1).getName()).isEmpty()) {
+            if(this.actorRepository.findByName(movie.getActorList().get(i1).getName()).isEmpty()) {
                 this.actorRepository.saveAndFlush(movie.getActorList().get(i1));
             }
             newActorList.add(this.actorRepository.findByName(movie.getActorList().get(i1).getName()).get());
@@ -168,18 +168,18 @@ public class DataLoader implements ApplicationRunner {
 
     private void addWriters(Movie movie, List<Writer> newWriterList) {
         for (int i1 = 0; i1 < movie.getWriterList().size(); i1++) {
-            if (this.writerRepository.findByName(movie.getWriterList().get(i1).getName()).isEmpty()) {
-                this.writerRepository.saveAndFlush(movie.getWriterList().get(i1));
-            }
+           if(this.writerRepository.findByName(movie.getWriterList().get(i1).getName()).isEmpty()) {
+               this.writerRepository.saveAndFlush(movie.getWriterList().get(i1));
+           }
             newWriterList.add(this.writerRepository.findByName(movie.getWriterList().get(i1).getName()).get());
         }
     }
 
     private void addDirectors(Movie movie, List<Director> newDirectorList) {
         for (int i1 = 0; i1 < movie.getDirectorList().size(); i1++) {
-            if (this.directorRepository.findByName(movie.getDirectorList().get(i1).getName()).isEmpty()) {
-                this.directorRepository.saveAndFlush(movie.getDirectorList().get(i1));
-            }
+                if(this.directorRepository.findByName(movie.getDirectorList().get(i1).getName()).isEmpty()) {
+                    this.directorRepository.saveAndFlush(movie.getDirectorList().get(i1));
+                }
             newDirectorList.add(this.directorRepository.findByName(movie.getDirectorList().get(i1).getName()).get());
         }
     }

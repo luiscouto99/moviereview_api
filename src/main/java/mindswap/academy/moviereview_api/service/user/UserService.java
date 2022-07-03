@@ -2,6 +2,7 @@ package mindswap.academy.moviereview_api.service.user;
 
 import lombok.AllArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.MovieDto;
+import mindswap.academy.moviereview_api.command.user.UserAuthDto;
 import mindswap.academy.moviereview_api.command.user.UserDto;
 import mindswap.academy.moviereview_api.command.user.UserUpdateDto;
 import mindswap.academy.moviereview_api.converter.user.IUserConverter;
@@ -18,6 +19,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +33,7 @@ import static mindswap.academy.moviereview_api.exception.ExceptionMessages.*;
 @Service
 @AllArgsConstructor
 @CacheConfig(cacheNames = {"UserDto"})
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
     private final IUserRepository REPOSITORY;
     private final IUserConverter CONVERTER;
     private final IRoleRepository ROLE_REPOSITORY;
@@ -148,10 +152,17 @@ public class UserService implements IUserService {
         return this.CONVERTER.converter(
                 this.REPOSITORY.save(updatedUser), UserDto.class);
     }
-
     @Override
     public void clearCache() {
         Objects.requireNonNull(this.CACHE_MANAGER.getCache("users")).clear();
         System.out.println("Cache cleared");
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = this.REPOSITORY.findByEmail(email).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        return UserAuthDto.builder().user(user).build();
+    }
+
+
 }
