@@ -3,6 +3,7 @@ package mindswap.academy.moviereview_api.dataloader;
 import lombok.RequiredArgsConstructor;
 import mindswap.academy.moviereview_api.command.movie.MovieApiDto;
 import mindswap.academy.moviereview_api.dataloader.movieloader.MovieList;
+import mindswap.academy.moviereview_api.exception.NotFoundException;
 import mindswap.academy.moviereview_api.persistence.model.movie.actor.Actor;
 import mindswap.academy.moviereview_api.converter.movie.IMovieConverter;
 import mindswap.academy.moviereview_api.persistence.model.movie.Movie;
@@ -22,7 +23,12 @@ import mindswap.academy.moviereview_api.persistence.model.review.rating.Rating;
 import mindswap.academy.moviereview_api.persistence.repository.review.rating.IRatingRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
+
+import static mindswap.academy.moviereview_api.exception.ExceptionMessages.MOVIE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Component
@@ -48,6 +56,7 @@ public class DataLoader implements ApplicationRunner {
     private final IRatingRepository iRatingRepository;
     private final PasswordEncoder encoder;
     private int offSet = 0;
+    private final CacheManager cacheManager;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -78,27 +87,29 @@ public class DataLoader implements ApplicationRunner {
         addRoles(roleList);
         addUsers(userList);
 
-        try {
-            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/Top250Movies/" + getKey(), MovieList.class);
-            for (int i = 0; i < 200; i++) {
-                MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/" + getKey() + "/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
-                Movie movie = this.movieConverter.converter(movieDto, Movie.class);
-                List<Director> newDirectorList = new ArrayList<>();
-                List<Writer> newWriterList = new ArrayList<>();
-                List<Actor> newActorList = new ArrayList<>();
-                List<Genre> newGenreList = new ArrayList<>();
-                addDirectors(movie, newDirectorList);
-                addWriters(movie, newWriterList);
-                addActors(movie, newActorList);
-                addGenre(movie, newGenreList);
-                movie.setGenreList(newGenreList);
-                movie.setActorList(newActorList);
-                movie.setWriterList(newWriterList);
-                movie.setDirectorList(newDirectorList);
-                addMovie(movie);
-            }
-        } catch (Exception ignored) {
-        }
+
+        clearCache();
+//        try {
+//            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/Top250Movies/" + getKey(), MovieList.class);
+//            for (int i = 0; i < 200; i++) {
+//                MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/" + getKey() + "/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
+//                Movie movie = this.movieConverter.converter(movieDto, Movie.class);
+//                List<Director> newDirectorList = new ArrayList<>();
+//                List<Writer> newWriterList = new ArrayList<>();
+//                List<Actor> newActorList = new ArrayList<>();
+//                List<Genre> newGenreList = new ArrayList<>();
+//                addDirectors(movie, newDirectorList);
+//                addWriters(movie, newWriterList);
+//                addActors(movie, newActorList);
+//                addGenre(movie, newGenreList);
+//                movie.setGenreList(newGenreList);
+//                movie.setActorList(newActorList);
+//                movie.setWriterList(newWriterList);
+//                movie.setDirectorList(newDirectorList);
+//                addMovie(movie);
+//            }
+//        } catch (Exception ignored) {
+//        }
     }
 
     private void addRating(List<Rating> ratingList) {
@@ -171,5 +182,10 @@ public class DataLoader implements ApplicationRunner {
             }
             newDirectorList.add(this.directorRepository.findByName(movie.getDirectorList().get(i1).getName()).get());
         }
+    }
+
+//    @CacheEvict(key = "#id", value = "movie")
+    public void clearCache() {
+        this.cacheManager.getCacheNames().clear();
     }
 }
