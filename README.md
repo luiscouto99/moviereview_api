@@ -1,16 +1,17 @@
 # Movie Review API - SpringBoot
 ***
 
-## OUR API LINK
+### API LINK
 ***
 https://moviereview-api.herokuapp.com
+<br/><br/>
 
-
-## EXTERNAL API
+### EXTERNAL API
 ***
 Our app is powered by IMDb API.
+<br/><br/>
 
-## IMPLEMENTATIONS
+### IMPLEMENTATIONS
 ***
 - Model Relationships
 - Tests
@@ -22,18 +23,17 @@ Our app is powered by IMDb API.
 - Redis Cloud
 - Heroku PostGres DB deployment
 - Heroku Deployment
-
-
+  <br/><br/>
 
 ### METHODS
 ***
-| Methods  | Description                                 |
+| Request  | Description                                 |
 |----------|---------------------------------------------|
 | `GET`    | Returns information of one or more records. |
 | `POST`   | Used to create new record in DB.            |
 | `PUT`    | Updates date from a record.                 |
 | `DELETE` | Deletes a record from the DB.               |
-
+<br/><br/>
 
 ### RESPONSES
 ***
@@ -46,15 +46,33 @@ Our app is powered by IMDb API.
 | `405`     | Method not implemented.              |
 | `409`     | Conflict trying to save same record. |
 | `500`     | Server error.                        |
+<br/><br/>
 
 ### AUTHENTICATION - AUTH0
 ***
 Our API uses [AuthO](https://auth0.com/) as a way of authentication/authorization.
+<br/><br/>
+**Sign Up and Login:**
 
-**How to Sign Up and Login:**
+| Request | Description | Link          |
+|---------|-------------|---------------|
+| `POST`  | `SignUp`    | /api/v1/users |
+              {
+                 "firstName": "Example",
+                 "lastName": "Example",
+                 "email": "example@email.com",
+                 "dateOfBirth": "1960-09-07",
+                 "password": "palavrapass"
+              }
 
-| Request | Link                      | Body                                                                                                               |
-|---------|---------------------------|--------------------------------------------------------------------------------------------------------------------|
-| `POST`  | /api/v1/users             | ![signup](https://user-images.githubusercontent.com/103673996/177134217-af200217-50ac-4845-b83a-c9c3f9afb730.png)  |
-| `POST`  | /login                    | ![login](https://user-images.githubusercontent.com/103673996/177135060-4e368afa-313f-4877-84f0-75292f1fe6ce.png)  |
+| Request | Description | Link          |
+|---------|-------------|---------------|
+| `POST`  | `Login`     | /login        |
+          {
+             "email": "joao@email.com",
+             "password": "palavrapass"
+          }
 
+<br/><br/>
+### RESOURCE GRUPS
+***
