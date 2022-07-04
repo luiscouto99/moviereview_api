@@ -79,8 +79,8 @@ public class DataLoader implements ApplicationRunner {
         addUsers(userList);
 
         try {
-            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/" + getKey(), MovieList.class);
-            for (int i = 0; i < 99; i++) {
+            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/Top250Movies/" + getKey(), MovieList.class);
+            for (int i = 0; i < 200; i++) {
                 MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/" + getKey() + "/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
                 Movie movie = this.movieConverter.converter(movieDto, Movie.class);
                 List<Director> newDirectorList = new ArrayList<>();
