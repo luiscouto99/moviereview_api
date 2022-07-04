@@ -232,7 +232,6 @@ Our API uses [AuthO](https://auth0.com/) as a way of authentication/authorizatio
 | Request  | Description     | Link          |
 |----------|-----------------|---------------|
 | `GET`    | Get All Reviews | api/v1/review |
-| `DELETE` | Delete Review   | api/v1/review |
 
 | Request  | Description     | Link               |
 |----------|-----------------|--------------------|
@@ -245,6 +244,17 @@ Our API uses [AuthO](https://auth0.com/) as a way of authentication/authorizatio
                 "ratingId": 1
             }
 
+| Request  | Description     | Link            |
+|----------|-----------------|-----------------|
+| `DELETE` | Delete Review   | api/v1/review   |
+            {
+                    "id": 2,
+                    "userId": "1",
+                    "movieId": "1",
+                    "review": "this movie is really really really bad",
+                    "ratingId": 1
+            }
+
 ### REVIEW_GET ( api/v1/review/byuser )
 | Request  | Description          | Link                      | Parameters      |
 |----------|----------------------|---------------------------|-----------------|
@@ -254,8 +264,14 @@ Our API uses [AuthO](https://auth0.com/) as a way of authentication/authorizatio
 | Request  | Description     | Link               |
 |----------|-----------------|--------------------|
 | `GET`    | Get All Ratings | api/v1/rating      |
+| `DELETE` | Delete Rating   | api/v1/rating/{id} |
+
+| Request  | Description     | Link               |
+|----------|-----------------|--------------------|
 | `POST`   | Add Rating      | api/v1/rating      |
 | `PUT`    | Update Rating   | api/v1/rating      |
-| `DELETE` | Delete Rating   | api/v1/rating/{id} |
+            {
+                "rate": "1"
+            }
 
 ---

@@ -78,27 +78,27 @@ public class DataLoader implements ApplicationRunner {
         addRoles(roleList);
         addUsers(userList);
 
-//        try {
-//            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/" + getKey(), MovieList.class);
-//            for (int i = 0; i < 5; i++) {
-//                MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/" + getKey() + "/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
-//                Movie movie = this.movieConverter.converter(movieDto, Movie.class);
-//                List<Director> newDirectorList = new ArrayList<>();
-//                List<Writer> newWriterList = new ArrayList<>();
-//                List<Actor> newActorList = new ArrayList<>();
-//                List<Genre> newGenreList = new ArrayList<>();
-//                addDirectors(movie, newDirectorList);
-//                addWriters(movie, newWriterList);
-//                addActors(movie, newActorList);
-//                addGenre(movie, newGenreList);
-//                movie.setGenreList(newGenreList);
-//                movie.setActorList(newActorList);
-//                movie.setWriterList(newWriterList);
-//                movie.setDirectorList(newDirectorList);
-//                addMovie(movie);
-//            }
-//        } catch (Exception ignored) {
-//        }
+        try {
+            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/MostPopularMovies/" + getKey(), MovieList.class);
+            for (int i = 0; i < 99; i++) {
+                MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/" + getKey() + "/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
+                Movie movie = this.movieConverter.converter(movieDto, Movie.class);
+                List<Director> newDirectorList = new ArrayList<>();
+                List<Writer> newWriterList = new ArrayList<>();
+                List<Actor> newActorList = new ArrayList<>();
+                List<Genre> newGenreList = new ArrayList<>();
+                addDirectors(movie, newDirectorList);
+                addWriters(movie, newWriterList);
+                addActors(movie, newActorList);
+                addGenre(movie, newGenreList);
+                movie.setGenreList(newGenreList);
+                movie.setActorList(newActorList);
+                movie.setWriterList(newWriterList);
+                movie.setDirectorList(newDirectorList);
+                addMovie(movie);
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     private void addRating(List<Rating> ratingList) {
