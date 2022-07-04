@@ -3,7 +3,7 @@
 
 ### API LINK
 ***
-https://moviereview-api.herokuapp.com
+https://moviereview-api.herokuapp.com/swagger-ui/index.html
 <br/><br/>
 
 ### EXTERNAL API
