@@ -34,10 +34,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-
-import java.util.ArrayList;
+import java.util.*;
 
 import static mindswap.academy.moviereview_api.exception.ExceptionMessages.MOVIE_NOT_FOUND;
 
@@ -88,7 +85,7 @@ public class DataLoader implements ApplicationRunner {
         addUsers(userList);
 
 
-        clearCache();
+
 //        try {
 //            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/Top250Movies/" + getKey(), MovieList.class);
 //            for (int i = 0; i < 200; i++) {
@@ -184,8 +181,12 @@ public class DataLoader implements ApplicationRunner {
         }
     }
 
-//    @CacheEvict(key = "#id", value = "movie")
     public void clearCache() {
-        this.cacheManager.getCacheNames().clear();
+        Collection<String> movieCache = this.cacheManager.getCacheNames();
+        movieCache.forEach(cache-> {
+            Cache theCache = this.cacheManager.getCache(cache);
+            if(theCache!=null)theCache.clear();
+        });
+
     }
 }
