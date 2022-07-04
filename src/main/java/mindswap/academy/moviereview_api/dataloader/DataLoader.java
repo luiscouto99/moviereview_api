@@ -85,7 +85,7 @@ public class DataLoader implements ApplicationRunner {
         addUsers(userList);
 
 
-
+        clearCache();
 //        try {
 //            MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/Top250Movies/" + getKey(), MovieList.class);
 //            for (int i = 0; i < 200; i++) {
