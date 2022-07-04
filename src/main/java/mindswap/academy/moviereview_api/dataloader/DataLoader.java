@@ -119,7 +119,7 @@ public class DataLoader implements ApplicationRunner {
 
     private void addUsers(List<User> userList) {
         userList.forEach(user -> {
-            if (!this.userRepository.exists(Example.of(user))) {
+            if (this.userRepository.findByEmail(user.getEmail()).isEmpty()) {
                 this.userRepository.save(user);
             }
         });
