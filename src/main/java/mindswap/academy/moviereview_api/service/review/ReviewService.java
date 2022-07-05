@@ -106,7 +106,7 @@ public class ReviewService implements IReviewService {
 
         movie.setRatingId(this.iRatingRepository.findById(Math.round(movieRating)).get());
         movie.setTotalReviews(movieReviews.size());
-
+        clearMovieCache();
         clearReviewCache();
         this.iMovieRepository.save(movie);
         return this.iReviewConverter.converter(review, ReviewDto.class);
@@ -116,7 +116,7 @@ public class ReviewService implements IReviewService {
         checkAuth.checkIfUserEqualsIdGiven(reviewDeleteDto.getUserId());
         Review review = this.iReviewRepository.searchByUserIdAndReviewId(reviewDeleteDto.getUserId(),reviewDeleteDto.getId())
                 .orElseThrow(() -> new NotFoundException(REVIEW_NOT_FOUND));
-
+        clearMovieCache();
         clearReviewCache();
         this.iReviewRepository.delete(review);
         return ResponseEntity.status(HttpStatus.OK).body("Review deleted");
@@ -140,12 +140,15 @@ public class ReviewService implements IReviewService {
 
         updatingReview(reviewUpdateDto, oldReviewAttributes, rating);
         updateMovieRating(oldReviewAttributes);
-
+        clearMovieCache();
         clearReviewCache();
         this.iReviewRepository.save(oldReviewAttributes);
         return this.iReviewConverter.converter(oldReviewAttributes, ReviewDto.class);
     }
-
+    private void clearMovieCache() {
+        Cache movieCache = this.cacheManager.getCache("movies");
+        if(movieCache!=null)movieCache.clear();
+    }
     private void clearReviewCache() {
         Cache reviewCache = this.cacheManager.getCache("reviews");
         if(reviewCache!=null)reviewCache.clear();
