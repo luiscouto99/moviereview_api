@@ -14,6 +14,6 @@ public interface IActorRepository extends JpaRepository<Actor,Long> {
             "INNER JOIN actor\n" +
             "ON actor_movie_list.actor_id = actor.id \n" +
             "WHERE actor.id = :id ;", nativeQuery = true)
-    Optional<Object> checkIfActorIsBeingUsed(Long id);
+    Optional<Actor> checkIfActorIsBeingUsed(Long id);
     Optional<Actor> findByName(String name);
 }

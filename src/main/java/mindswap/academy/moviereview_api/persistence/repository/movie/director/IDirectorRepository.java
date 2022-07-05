@@ -14,7 +14,7 @@ public interface IDirectorRepository extends JpaRepository<Director,Long> {
             "INNER JOIN director\n" +
             "ON director_movie_list.director_id = director.id \n" +
             "WHERE director.id = :id ;", nativeQuery = true)
-    Optional<Object> checkIfDirectorIsBeingUsed(Long id);
+    Optional<Director> checkIfDirectorIsBeingUsed(Long id);
 
     Optional<Director> findByName(String name);
 }

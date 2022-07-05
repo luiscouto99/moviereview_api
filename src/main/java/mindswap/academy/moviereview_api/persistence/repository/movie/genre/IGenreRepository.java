@@ -15,5 +15,5 @@ public interface IGenreRepository extends JpaRepository<Genre,Long> {
             "INNER JOIN genre\n" +
             "ON genre_movie_list.genre_id = genre.id \n" +
             "WHERE genre.id = :id ;", nativeQuery = true)
-    Optional<Object> checkIfGenreIsBeingUsed(Long id);
+    Optional<Genre> checkIfGenreIsBeingUsed(Long id);
 }
