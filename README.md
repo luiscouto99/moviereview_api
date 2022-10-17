@@ -33,7 +33,6 @@ Our app is powered by IMDb API.
 | `POST`   | Used to create new record in DB.            |
 | `PUT`    | Updates date from a record.                 |
 | `DELETE` | Deletes a record from the DB.               |
-<br/><br/>
 
 ### RESPONSES
 ***
@@ -46,7 +45,6 @@ Our app is powered by IMDb API.
 | `405`     | Method not implemented.              |
 | `409`     | Conflict trying to save same record. |
 | `500`     | Server error.                        |
-<br/><br/>
 
 ### AUTHENTICATION - AUTH0
 ***
@@ -72,7 +70,7 @@ Our API uses [AuthO](https://auth0.com/) as a way of authentication/authorizatio
                  "email": "joao@email.com",
                  "password": "palavrapass"
               }
-<br/><br/>
+
 ## RESOURCE GRUPS
 ***
 ### MOVIE ( api/v1/movie )
