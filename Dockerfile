@@ -1,6 +1,6 @@
 FROM openjdk:18-alpine
 COPY . /src/main/java
-WORKDIR /src/java
+WORKDIR /src/main/java
 RUN ["javac","MoviereviewApiApplication.java"]
 ENTRYPOINT ["java","MoviereviewApiApplication"]
 
