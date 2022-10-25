@@ -88,7 +88,7 @@ public class DataLoader implements ApplicationRunner {
         clearCache();
         try {
             MovieList movieListId = restTemplate.getForObject("https://imdb-api.com/en/API/Top250Movies/" + getKey(), MovieList.class);
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 5; i++) {
                 MovieApiDto movieDto = restTemplate.getForObject("https://imdb-api.com/en/API/Title/" + getKey() + "/" + movieListId.getItems().get(i).getId(), MovieApiDto.class);
                 Movie movie = this.movieConverter.converter(movieDto, Movie.class);
                 List<Director> newDirectorList = new ArrayList<>();
